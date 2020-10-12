@@ -1,0 +1,17 @@
+[package]
+name = "rsmooth"
+version = "0.1.0"
+authors = ["72nd <foo@bar.com>"]
+edition = "2018"
+
+[lib]
+name = "lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bin"
+path = "src/bin.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]

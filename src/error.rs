@@ -7,11 +7,13 @@ pub enum SmoothError<'a> {
     PandocMissing,
     /// M4 was enabled but executable wasn't found on the system.
     M4Missing,
-    /// The input file was not found under the given path. Second string refers to the expanded
-    /// path.
+    /// Working folder couldn't be determined.
+    WdNotFound,
+    /// Lookup error of shellexpand for paths. First element is the erroneous path, second contains
+    /// the cause for the error.
+    LookupError(&'a str),
+    /// The input file was not found under the given path. 
     InputFileNotFound(&'a str, &'a str),
-    /// Given environment variable was not found on the system.
-    EnvVariableNotFound(&'a str),
 }
 
 impl fmt::Display for SmoothError<'_> {
@@ -22,14 +24,15 @@ impl fmt::Display for SmoothError<'_> {
                 f,
                 "m4 was enabled in metadata-header but executable isn't present on system"
             ),
+            SmoothError::WdNotFound => write!(f, "working directory couldn't be determined"),
+            SmoothError::LookupError(path) => {
+                write!(f, "some environment variables not found in path {}", path)
+            }
             SmoothError::InputFileNotFound(given, normalized) => write!(
                 f,
                 "input file \"{}\" couldn't be found under normalized path \"{}\"",
                 given, normalized
             ),
-            SmoothError::EnvVariableNotFound(x) => {
-                write!(f, "environment variable \"{}\" not found", x)
-            }
         }
     }
 }

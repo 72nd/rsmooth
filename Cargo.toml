@@ -15,3 +15,4 @@ path = "src/bin.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+shellexpand = "2.0.0"

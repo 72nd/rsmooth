@@ -1,4 +1,5 @@
 use crate::error::SmoothError;
+use crate::pandoc::Pandoc;
 
 use std::env;
 use std::fs;
@@ -24,6 +25,7 @@ impl<'a> MetaData<'a> {
     /// Caller has to make sure, pandoc exists on the system.
     pub fn from(file: &PathBuf) -> Result<Self, SmoothError<'a>> {
         let json_tpl = create_template()?;
+        let pandoc = Pandoc::new();
         remove_template(json_tpl)?;
         Ok(Self {
             template: "not-implemented",

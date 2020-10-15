@@ -9,7 +9,7 @@ use std::path::PathBuf;
 pub enum SmoothError<'a> {
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
     /// handling of pandoc (-errors) see the pandoc module.
-    Pandoc(PandocError),
+    Pandoc(PandocError<'a>),
     /// M4 was enabled but executable wasn't found on the system.
     M4Missing,
     /// Working folder couldn't be determined.

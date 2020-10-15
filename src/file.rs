@@ -1,22 +1,18 @@
 use crate::error::SmoothError;
 
 use std::env;
+use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 use shellexpand;
 
-/// Defines the metadata header of a rsmooth markdown file.
-struct Header<'a> {
-    /// Path to the pandoc template file can be absolute or relative to the markdown file. Tilde
-    /// (`~`) can be used to refer to the home folder of the current user. It's also possible to
-    /// use to use environment variables by prefixing the name with a dollar sign (ex.: `$PATH`).
-    template: &'a str,
-}
+const PANDOC_CMD: &str = "pandoc";
 
 /// Describes the (root) markdown file which should be converted.
 pub struct File<'a> {
     /// Absolute path to the markdown source file.
-    path: &'a str,
+    path: PathBuf,
     /// Destination path for the output file.
     ouput_path: Option<&'a str>,
 }
@@ -24,25 +20,25 @@ pub struct File<'a> {
 impl<'a> File<'a> {
     /// Returns a new instance of the file object for a given path. The output folder can be
     /// defined, otherwise the same folder and file name as the input file will be used.
-    pub fn new<S: Into<&'a str>>(path: S, output_path: Option<S>) -> Self {
-        Self {
-            path: path.into(),
+    pub fn new<S: Into<&'a str>>(path: S, output_path: Option<S>) -> Result<Self, SmoothError<'a>> {
+        let in_path = path.into();
+        let norm_in_path = normalize_path(in_path)?;
+        if !norm_in_path.exists() {
+            return Err(SmoothError::InputFileNotFound(in_path, norm_in_path));
+        }
+        Ok(Self {
+            path: norm_in_path,
             ouput_path: match output_path {
                 Some(x) => Some(x.into()),
                 None => None,
             },
-        }
+        })
     }
 
     /// Starts the conversion.
     pub fn convert(&self) -> Result<(), SmoothError> {
         Ok(())
     }
-}
-
-/// Checks the existence of file with the given path.
-fn check_file_existence(path: &str) -> bool {
-    Path::new(path).exists()
 }
 
 /// Returns the absolute path to a given folder. Environment variables (words starting with `$`)

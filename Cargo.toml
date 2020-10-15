@@ -1,7 +1,7 @@
 [package]
-name = "rsmooth"
+name = "rsmooth-lib"
 version = "0.1.0"
-authors = ["72nd <foo@bar.com>"]
+authors = ["72nd <msg@frg72.com>"]
 edition = "2018"
 
 [lib]
@@ -9,10 +9,13 @@ name = "lib"
 path = "src/lib.rs"
 
 [[bin]]
-name = "bin"
+name = "rsmooth"
 path = "src/bin.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+clap = "3.0.0-beta.2"
+env_logger = "0.7.1"
+log = "0.4"
 shellexpand = "2.0.0"

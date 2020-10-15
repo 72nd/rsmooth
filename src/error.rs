@@ -1,9 +1,15 @@
+use crate::pandoc::PandocError;
+
 use std::error::Error;
 use std::fmt;
+use std::io::Error as IOError;
 use std::path::PathBuf;
 
 /// The error type for errors which can occur while running rsmooth.
 pub enum SmoothError<'a> {
+    /// Error occurring while calling pandoc contains an PandocError. For more information on the
+    /// handling of pandoc (-errors) see the pandoc module.
+    Pandoc(PandocError),
     /// M4 was enabled but executable wasn't found on the system.
     M4Missing,
     /// Working folder couldn't be determined.
@@ -15,12 +21,22 @@ pub enum SmoothError<'a> {
     InputFileNotFound(&'a str, PathBuf),
     /// Couldn't read the Frontmatter YAML Header of the input file. String resembles the path to
     /// the input file.
-    MetaDataReadError(&'a str),
+    MetaDataRead(&'a str),
+    /// Occurs when the JSON template is already present in the temporary folder. See the matedata
+    /// module for more information. Contains the path to the template file.
+    JsonTemplateExists(PathBuf),
+    /// Error occurring while the creation of the metadata as JSON template. First element contains
+    /// path to the file, the second element contains the std::io::Error with the cause.
+    CreateJsonTemplateFailed(PathBuf, IOError),
+    /// Error for failing of the metadata as JSON template removal. Contains the path to the
+    /// template file and the cause.
+    RemoveJsonTemplateFailed(PathBuf, IOError),
 }
 
 impl fmt::Display for SmoothError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            SmoothError::Pandoc(err) => write!(f, "pandoc error: "),
             SmoothError::M4Missing => write!(
                 f,
                 "m4 was enabled in metadata-header but executable isn't present on system"
@@ -33,13 +49,20 @@ impl fmt::Display for SmoothError<'_> {
                 f,
                 "input file \"{}\" couldn't be found under normalized path \"{}\"",
                 given,
-                normalized.as_path().to_str().unwrap()
+                normalized.display()
             ),
-            SmoothError::MetaDataReadError(path) => write!(
+            SmoothError::MetaDataRead(path) => write!(
                 f,
                 "YAML header for input file \"{}\" couldn't be read",
                 path
             ),
+            SmoothError::JsonTemplateExists(path) => write!(
+                f,
+                "pandoc template for extracting the metadata as JSON already present under \"{}\" please remove this file manually before proceeding",
+                path.display()
+            ),
+            SmoothError::CreateJsonTemplateFailed(path, why) => write!(f, "couldn't write temporary metadata-as-JSON template to {} {}", path.display(), why),
+            SmoothError::RemoveJsonTemplateFailed(path, why) => write!(f, "couldn't remove temporary metadata-as-JSON template under {} {}", path.display(), why),
         }
     }
 }
@@ -51,4 +74,3 @@ impl fmt::Debug for SmoothError<'_> {
 }
 
 impl Error for SmoothError<'_> {}
-

@@ -1,9 +1,8 @@
 use crate::error::SmoothError;
+use crate::metadata::MetaData;
 
 use std::env;
-use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
-use std::process::Command;
 
 use shellexpand;
 
@@ -34,7 +33,8 @@ impl<'a> File<'a> {
     }
 
     /// Converts the loaded markdown file.
-    pub fn convert(&self) -> Result<(), SmoothError> {
+    pub fn convert(self) -> Result<(), SmoothError<'a>> {
+        let metadata = MetaData::from(&self.path)?;
         Ok(())
     }
 }
@@ -45,11 +45,10 @@ impl<'a> File<'a> {
 fn normalize_path<'a>(path: &'a str) -> Result<PathBuf, SmoothError> {
     let expanded = match shellexpand::full(path) {
         Ok(x) => x,
-        Err(e) => return Err(SmoothError::LookupError(path)),
+        Err(_e) => return Err(SmoothError::LookupError(path)),
     };
     let mut expanded_str = String::new();
     expanded_str.push_str(&expanded);
-    println!("{}", expanded);
     let p = Path::new(&expanded_str);
     if p.is_absolute() {
         Ok(p.to_path_buf())

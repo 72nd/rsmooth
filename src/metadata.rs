@@ -6,6 +6,7 @@ use std::fs;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
+
 /// Name of the temporary pandoc template for extracting the header of a markdown file as JSON.
 const JSON_TEMPLATE_PATH: &str = "rsmooth-metadata.pandoc-tpl";
 
@@ -25,7 +26,11 @@ impl<'a> MetaData<'a> {
     /// Caller has to make sure, pandoc exists on the system.
     pub fn from(file: &PathBuf) -> Result<Self, SmoothError<'a>> {
         let json_tpl = create_template()?;
-        Pandoc::new().convert_with_template_to_str(file, &json_tpl);
+        match Pandoc::new().convert_with_template_to_str(file, &json_tpl) {
+            Ok(x) => println!("{}", String::from_utf8(x).unwrap()),
+            Err(_) => {}
+        };
+
         remove_template(json_tpl)?;
         Ok(Self {
             template: "not-implemented",

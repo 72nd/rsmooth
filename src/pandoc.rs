@@ -46,6 +46,7 @@ impl fmt::Display for PandocError<'_> {
                 false => write!(f, "couldn't find pandoc with the executable name \"{}\" use env \"{}\" to specify otherwise", executable, PANDOC_ENV),
             },
             ErrorKind::RelativePath(path, purpose) => write!(f, "internal error, pandoc module was called with an relative {} path {}, only absolute paths allowed", purpose, path.display()),
+            ErrorKind::StringFromUtf8 => write!(f, "couldn't convert standard output (stdout) from pandoc"),
         }
     }
 }
@@ -60,6 +61,8 @@ pub enum ErrorKind<'a> {
     /// to check if a path argument is absolute. Contains the erroneous path and a description of
     /// it's purpose.
     RelativePath(&'a PathBuf, &'a str),
+    /// Couldn't convert the Vec<u8> from the pandoc stdout to a string.
+    StringFromUtf8,
 }
 
 /// Wrapper for calling pandoc. Exposes all needed functionality via it's method.
@@ -90,19 +93,21 @@ impl<'a> Pandoc {
     ) -> Result<Vec<u8>, PandocError<'a>> {
         check_path(input, "input")?;
         check_path(template, "template")?;
+        debug!("input: {}", input.display());
+        debug!("template: {}", template.display());
 
         match Command::new(self.executable.clone())
             .arg("--template")
-            .arg(input)
             .arg(template)
-            .output() {
-                Ok(x) => Ok(x.stdout),
-                Err(e) => {
-                    println!("{}", e);
-                    Ok(vec![])
-                }
+            .arg(input)
+            .output()
+        {
+            Ok(x) => Ok(x.stdout),
+            Err(e) => {
+                println!("{}", e);
+                Ok(vec![])
             }
-        // self.run(&["--template", input.as_path().to_str().unwrap(), template.as_path().to_str().unwrap()]);
+        }
     }
 }
 

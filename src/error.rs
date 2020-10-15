@@ -21,13 +21,14 @@ pub enum SmoothError<'a> {
     InputFileNotFound(&'a str, PathBuf),
     /// Couldn't read the Frontmatter YAML Header of the input file. String resembles the path to
     /// the input file.
-    MetaDataRead(&'a str),
+    MetadataRead(&'a str),
     /// Occurs when the JSON template is already present in the temporary folder. See the matedata
     /// module for more information. Contains the path to the template file.
     JsonTemplateExists(PathBuf),
     /// Error occurring while the creation of the metadata as JSON template. First element contains
     /// path to the file, the second element contains the std::io::Error with the cause.
     CreateJsonTemplateFailed(PathBuf, IOError),
+    /// Occurs when the converting metadata JSON cannot be parsed.
     /// Error for failing of the metadata as JSON template removal. Contains the path to the
     /// template file and the cause.
     RemoveJsonTemplateFailed(PathBuf, IOError),
@@ -51,7 +52,7 @@ impl fmt::Display for SmoothError<'_> {
                 given,
                 normalized.display()
             ),
-            SmoothError::MetaDataRead(path) => write!(
+            SmoothError::MetadataRead(path) => write!(
                 f,
                 "YAML header for input file \"{}\" couldn't be read",
                 path

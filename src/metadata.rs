@@ -25,7 +25,7 @@ impl<'a> MetaData<'a> {
     /// Caller has to make sure, pandoc exists on the system.
     pub fn from(file: &PathBuf) -> Result<Self, SmoothError<'a>> {
         let json_tpl = create_template()?;
-        let pandoc = Pandoc::new();
+        Pandoc::new().convert_with_template_to_str(file, &json_tpl);
         remove_template(json_tpl)?;
         Ok(Self {
             template: "not-implemented",

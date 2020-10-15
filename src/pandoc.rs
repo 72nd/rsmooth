@@ -28,7 +28,7 @@ pub struct PandocError<'a> {
 impl<'a> PandocError<'a> {
     /// Returns a new RelativePath error. Learn more in the documentation of
     /// ErrorKind::RelativePath.
-    fn relative_path(path: PathBuf, description: &'a str) -> Self {
+    fn relative_path(path: &'a PathBuf, description: &'a str) -> Self {
         Self {
             input: None,
             template: None,
@@ -59,7 +59,7 @@ pub enum ErrorKind<'a> {
     /// working directory cannot infer with the execution of pandoc. All public Pandoc methods have
     /// to check if a path argument is absolute. Contains the erroneous path and a description of
     /// it's purpose.
-    RelativePath(PathBuf, &'a str),
+    RelativePath(&'a PathBuf, &'a str),
 }
 
 /// Wrapper for calling pandoc. Exposes all needed functionality via it's method.
@@ -68,39 +68,46 @@ pub struct Pandoc {
     executable: String,
 }
 
-impl Pandoc {
+impl<'a> Pandoc {
     /// Returns a new instance of the Pandoc struct. Will use the `PANDOC_CMD` environment variable
     /// to determine the name of the pandoc executable. If the variable isn't set the constant
     /// PANDOC_CMD will be used.
     pub fn new() -> Self {
-        let env = match env::var(PANDOC_ENV) {
-            Ok(x) => x,
-            Err(_) => String::from(PANDOC_CMD),
-        };
-        Self { executable: env }
+        Self {
+            executable: match env::var(PANDOC_ENV) {
+                Ok(x) => x,
+                Err(_) => String::from(PANDOC_CMD),
+            },
+        }
     }
 
-    // Converts a given file with a template to a given output file. The function
-    //pub fn convert_with_template(
+    /// Converts a given file with a template and returns the result as a string. This function is
+    /// mainly used for the extraction of the frontmatter header as a JSON file.
+    pub fn convert_with_template_to_str(
+        &self,
+        input: &'a PathBuf,
+        template: &'a PathBuf,
+    ) -> Result<Vec<u8>, PandocError<'a>> {
+        check_path(input, "input")?;
+        check_path(template, "template")?;
 
-    /// Internal function to call pandoc itself. Returns an PandocError if anything went wrong. To
-    /// ensure consistent error handling all calls to pandoc should be handle with this method.
-    fn run<I, S>(&self, args: I) -> Result<(), PandocError>
-    where
-        I: IntoIterator<Item = S>,
-        S: AsRef<OsStr>,
-    {
-        match Command::new(self.executable.clone()).args(args).spawn() {
-            // Ok(_) => Ok(()),
-            Ok(_) => {}
-            Err(e) => println!("todo: {}", e),
-        }
-        Ok(())
+        match Command::new(self.executable.clone())
+            .arg("--template")
+            .arg(input)
+            .arg(template)
+            .output() {
+                Ok(x) => Ok(x.stdout),
+                Err(e) => {
+                    println!("{}", e);
+                    Ok(vec![])
+                }
+            }
+        // self.run(&["--template", input.as_path().to_str().unwrap(), template.as_path().to_str().unwrap()]);
     }
 }
 
 /// Checks if the given path is absolute and returns the corresponding PandocError.
-fn check_path<'a>(path: PathBuf, purpose: &'a str) -> Result<(), PandocError> {
+fn check_path<'a>(path: &'a PathBuf, purpose: &'a str) -> Result<(), PandocError<'a>> {
     match path.is_absolute() {
         true => Ok(()),
         false => Err(PandocError::relative_path(path, purpose)),

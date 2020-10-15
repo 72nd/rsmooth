@@ -1,11 +1,6 @@
 #[macro_use]
 extern crate log;
 
-mod error;
-mod file;
-
-use file::File;
-
 use clap::{App, AppSettings, Arg, ArgMatches};
 
 /// Default CLI interface for rsmooth-lib.
@@ -66,22 +61,11 @@ fn example_cmd(_matches: &ArgMatches) {
 
 /// Handles default command.
 fn default_cmd(matches: &ArgMatches) {
-    info!("hoi");
-    let file = match File::new(
+    match lib::convert(
         matches.value_of("INPUT").unwrap(),
         matches.value_of("output"),
     ) {
-        Ok(x) => x,
-        Err(e) => {
-            error!("{}", e);
-            return;
-        }
-    };
-    match file.convert() {
         Ok(_) => {}
-        Err(e) => {
-            error!("{}", e);
-            return;
-        }
+        Err(e) => error!("{}", e),
     };
 }

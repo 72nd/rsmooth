@@ -7,8 +7,6 @@ use std::process::Command;
 
 use shellexpand;
 
-const PANDOC_CMD: &str = "pandoc";
-
 /// Describes the (root) markdown file which should be converted.
 pub struct File<'a> {
     /// Absolute path to the markdown source file.
@@ -35,7 +33,7 @@ impl<'a> File<'a> {
         })
     }
 
-    /// Starts the conversion.
+    /// Converts the loaded markdown file.
     pub fn convert(&self) -> Result<(), SmoothError> {
         Ok(())
     }

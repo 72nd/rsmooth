@@ -29,6 +29,7 @@ pub enum SmoothError<'a> {
     /// path to the file, the second element contains the std::io::Error with the cause.
     CreateJsonTemplateFailed(PathBuf, IOError),
     /// Occurs when the converting metadata JSON cannot be parsed.
+    MetadataParseFailed,
     /// Error for failing of the metadata as JSON template removal. Contains the path to the
     /// template file and the cause.
     RemoveJsonTemplateFailed(PathBuf, IOError),
@@ -37,7 +38,7 @@ pub enum SmoothError<'a> {
 impl fmt::Display for SmoothError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            SmoothError::Pandoc(err) => write!(f, "pandoc error: "),
+            SmoothError::Pandoc(err) => write!(f, "pandoc error: {}", err),
             SmoothError::M4Missing => write!(
                 f,
                 "m4 was enabled in metadata-header but executable isn't present on system"
@@ -63,6 +64,7 @@ impl fmt::Display for SmoothError<'_> {
                 path.display()
             ),
             SmoothError::CreateJsonTemplateFailed(path, why) => write!(f, "couldn't write temporary metadata-as-JSON template to {} {}", path.display(), why),
+            SmoothError::MetadataParseFailed => write!(f, "couldn't parse frontmatter metadata header of document"),
             SmoothError::RemoveJsonTemplateFailed(path, why) => write!(f, "couldn't remove temporary metadata-as-JSON template under {} {}", path.display(), why),
         }
     }

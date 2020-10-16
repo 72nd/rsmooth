@@ -16,9 +16,8 @@ pub enum SmoothError<'a> {
     M4Missing,
     /// Working folder couldn't be determined.
     WdNotFound,
-    /// Lookup error of shellexpand for paths. First element is the erroneous path, second contains
-    /// the cause for the error.
-    LookupError(&'a str),
+    /// Lookup error of shellexpand for paths. Contains the erroneous path.  
+    LookupError(String),
     /// The input file was not found under the given path.
     InputFileNotFound(&'a str, PathBuf),
     /// Couldn't read the Frontmatter YAML Header of the input file. String resembles the path to
@@ -35,6 +34,12 @@ pub enum SmoothError<'a> {
     /// Error for failing of the metadata as JSON template removal. Contains the path to the
     /// template file and the cause.
     RemoveJsonTemplateFailed(PathBuf, IOError),
+    /// The given template path as specified in the metadata header was not found with the given
+    /// path.
+    TemplateNotFound(PathBuf),
+    /// The given bibliography path as specified in the metadata header was not found with the given
+    /// path.
+    BibliographyNotFound(PathBuf),
 }
 
 impl fmt::Display for SmoothError<'_> {
@@ -81,6 +86,16 @@ impl fmt::Display for SmoothError<'_> {
                 "couldn't remove temporary metadata-as-JSON template under {} {}",
                 path.display(),
                 why
+            ),
+            SmoothError::TemplateNotFound(path) => write!(
+                f,
+                "couldn't find template file under {}",
+                path.display()
+            ),
+            SmoothError::BibliographyNotFound(path) => write!(
+                f,
+                "couldn't find bibliography file under {}",
+                path.display()
             ),
         }
     }

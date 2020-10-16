@@ -8,10 +8,11 @@ use shellexpand;
 /// Returns the absolute path to a given file. Environment variables (words starting with `$`)
 /// will be take into account. A tilde (`~`) at the beginning of a path will be replaced with the
 /// home directory of the current user.
-pub fn normalize_path<'a>(path: &'a str) -> Result<PathBuf, SmoothError> {
-    let expanded = match shellexpand::full(path) {
+pub fn normalize_path<'a, S: Into<String>>(path: S) -> Result<PathBuf, SmoothError<'a>> {
+    let p = path.into();
+    let expanded = match shellexpand::full(&p) {
         Ok(x) => x,
-        Err(_e) => return Err(SmoothError::LookupError(path)),
+        Err(_e) => return Err(SmoothError::LookupError(p)),
     };
     let mut expanded_str = String::new();
     expanded_str.push_str(&expanded);

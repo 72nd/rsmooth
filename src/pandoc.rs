@@ -1,6 +1,6 @@
 /// This module contains all functions to call pandoc and handle any errors occurring mine while.
+use std::borrow::Cow;
 use std::env;
-use std::ffi::OsStr;
 use std::fmt;
 use std::path::PathBuf;
 use std::process::Command;
@@ -28,12 +28,22 @@ pub struct PandocError<'a> {
 impl<'a> PandocError<'a> {
     /// Returns a new RelativePath error. Learn more in the documentation of
     /// ErrorKind::RelativePath.
-    fn relative_path(path: &'a PathBuf, description: &'a str) -> Self {
+    fn relative_path(path: PathBuf, description: &'a str) -> Self {
         Self {
             input: None,
             template: None,
             output: None,
             kind: ErrorKind::RelativePath(path, description),
+        }
+    }
+
+    /// Returns a new StringFromUtf8 error instance.
+    fn string_from_utf8() -> Self {
+        Self {
+            input: None,
+            template: None,
+            output: None,
+            kind: ErrorKind::StringFromUtf8,
         }
     }
 }
@@ -42,11 +52,28 @@ impl fmt::Display for PandocError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match &self.kind {
             ErrorKind::NotFound(executable) => match executable == &PANDOC_CMD {
-                true => write!(f, "couldn't find \"pandoc\" on your system, use the env \"{}\" to use an non default executable name", PANDOC_ENV),
-                false => write!(f, "couldn't find pandoc with the executable name \"{}\" use env \"{}\" to specify otherwise", executable, PANDOC_ENV),
+                true => write!(
+                    f,
+                    "couldn't find \"pandoc\" on your system, use the env \"{}\" to use an non default executable name",
+                    PANDOC_ENV
+                ),
+                false => write!(
+                    f,
+                    "couldn't find pandoc with the executable name \"{}\" use env \"{}\" to specify otherwise",
+                    executable,
+                    PANDOC_ENV
+                ),
             },
-            ErrorKind::RelativePath(path, purpose) => write!(f, "internal error, pandoc module was called with an relative {} path {}, only absolute paths allowed", purpose, path.display()),
-            ErrorKind::StringFromUtf8 => write!(f, "couldn't convert standard output (stdout) from pandoc"),
+            ErrorKind::RelativePath(path, purpose) => write!(
+                f,
+                "internal error, pandoc module was called with an relative {} path {}, only absolute paths allowed",
+                purpose,
+                path.display()
+            ),
+            ErrorKind::StringFromUtf8 => write!(
+                f,
+                "couldn't convert standard output (stdout) from pandoc"
+            ),
         }
     }
 }
@@ -60,7 +87,7 @@ pub enum ErrorKind<'a> {
     /// working directory cannot infer with the execution of pandoc. All public Pandoc methods have
     /// to check if a path argument is absolute. Contains the erroneous path and a description of
     /// it's purpose.
-    RelativePath(&'a PathBuf, &'a str),
+    RelativePath(PathBuf, &'a str),
     /// Couldn't convert the Vec<u8> from the pandoc stdout to a string.
     StringFromUtf8,
 }
@@ -88,13 +115,16 @@ impl<'a> Pandoc {
     /// mainly used for the extraction of the frontmatter header as a JSON file.
     pub fn convert_with_template_to_str(
         &self,
-        input: &'a PathBuf,
-        template: &'a PathBuf,
-    ) -> Result<Vec<u8>, PandocError<'a>> {
-        check_path(input, "input")?;
-        check_path(template, "template")?;
-        debug!("input: {}", input.display());
-        debug!("template: {}", template.display());
+        input: PathBuf,
+        template: PathBuf,
+    ) -> Result<String, PandocError<'a>> {
+        check_path(input.clone(), "input")?;
+        check_path(template.clone(), "template")?;
+        debug!(
+            "input: {}, template: {}",
+            input.display(),
+            template.display()
+        );
 
         match Command::new(self.executable.clone())
             .arg("--template")
@@ -102,17 +132,21 @@ impl<'a> Pandoc {
             .arg(input)
             .output()
         {
-            Ok(x) => Ok(x.stdout),
+            Ok(x) => match String::from_utf8(x.stdout) {
+                Ok(x) => Ok(x),
+                Err(_) => Err(PandocError::string_from_utf8()),
+            },
             Err(e) => {
+                // TODO finish
                 println!("{}", e);
-                Ok(vec![])
+                Ok(String::new())
             }
         }
     }
 }
 
 /// Checks if the given path is absolute and returns the corresponding PandocError.
-fn check_path<'a>(path: &'a PathBuf, purpose: &'a str) -> Result<(), PandocError<'a>> {
+fn check_path<'a>(path: PathBuf, purpose: &'a str) -> Result<(), PandocError<'a>> {
     match path.is_absolute() {
         true => Ok(()),
         false => Err(PandocError::relative_path(path, purpose)),

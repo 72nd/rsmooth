@@ -5,6 +5,8 @@ use std::fmt;
 use std::io::Error as IOError;
 use std::path::PathBuf;
 
+use serde_json::error::Error as JsonError;
+
 /// The error type for errors which can occur while running rsmooth.
 pub enum SmoothError<'a> {
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
@@ -29,7 +31,7 @@ pub enum SmoothError<'a> {
     /// path to the file, the second element contains the std::io::Error with the cause.
     CreateJsonTemplateFailed(PathBuf, IOError),
     /// Occurs when the converting metadata JSON cannot be parsed.
-    MetadataParseFailed,
+    MetadataParseFailure(JsonError),
     /// Error for failing of the metadata as JSON template removal. Contains the path to the
     /// template file and the cause.
     RemoveJsonTemplateFailed(PathBuf, IOError),
@@ -63,9 +65,23 @@ impl fmt::Display for SmoothError<'_> {
                 "pandoc template for extracting the metadata as JSON already present under \"{}\" please remove this file manually before proceeding",
                 path.display()
             ),
-            SmoothError::CreateJsonTemplateFailed(path, why) => write!(f, "couldn't write temporary metadata-as-JSON template to {} {}", path.display(), why),
-            SmoothError::MetadataParseFailed => write!(f, "couldn't parse frontmatter metadata header of document"),
-            SmoothError::RemoveJsonTemplateFailed(path, why) => write!(f, "couldn't remove temporary metadata-as-JSON template under {} {}", path.display(), why),
+            SmoothError::CreateJsonTemplateFailed(path, why) => write!(
+                f,
+                "couldn't write temporary metadata-as-JSON template to {} {}",
+                path.display(),
+                why
+            ),
+            SmoothError::MetadataParseFailure(err) => write!(
+                f,
+                "couldn't parse frontmatter metadata header of document {}",
+                err
+            ),
+            SmoothError::RemoveJsonTemplateFailed(path, why) => write!(
+                f,
+                "couldn't remove temporary metadata-as-JSON template under {} {}",
+                path.display(),
+                why
+            ),
         }
     }
 }

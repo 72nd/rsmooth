@@ -27,14 +27,17 @@ struct Header {
     #[serde(default = "default_engine")]
     engine: String,
     /// Set additional parameters to pandoc.
-    #[serde(default = "default_pandoc_options")]
-    pandoc_optons: String,
+    // #[serde(default = "default_pandoc_options")]
+    pandoc_optons: Option<String>,
     /// Whether M4 should be executed on the input file or not.
     #[serde(default = "default_do_m4")]
     do_m4: bool,
+    /// Whether newline should break text in description texts. This is especially useful when
+    /// using description lists for screen- and stageplays.
+    #[serde(default = "default_break_description")]
+    break_description: bool,
     /// Path to bibliography file (JSON CTL).
-    #[serde(default = "default_bibliography")]
-    bibliography: String,
+    bibliography: Option<String>,
 }
 
 /// Returns the default value (xelatex) for the engine field. Used, when the field is not set in
@@ -43,22 +46,16 @@ fn default_engine() -> String {
     String::from("xelatex")
 }
 
-/// Returns the default value () for the pandoc_optons field. Used, when the field is not set in
-/// the metadata.
-fn default_pandoc_options() -> String {
-    String::new()
-}
-
 /// Returns the default value (false) for the do_m4 field. Used, when the field is not set in
 /// the metadata.
 fn default_do_m4() -> bool {
     false
 }
 
-/// Returns the default value () for the bibliography field. Used, when the field is not set in
-/// the metadata.
-fn default_bibliography() -> String {
-    String::new()
+/// Returns the default value (false) for the break_description field. Used, when the field is
+/// not set in the metadata.
+fn default_break_description() -> bool {
+    false
 }
 
 impl<'a> Header {
@@ -72,7 +69,7 @@ impl<'a> Header {
                 return Err(SmoothError::Pandoc(x));
             }
         };
-        let mut data: Self = match serde_json::from_str(&raw) {
+        let data: Self = match serde_json::from_str(&raw) {
             Ok(x) => x,
             Err(e) => {
                 Header::remove_template(json_tpl.clone())?;
@@ -117,15 +114,15 @@ pub struct Metadata {
     /// Path to the pandoc template file can be absolute or relative to the markdown file. Tilde
     /// (`~`) can be used to refer to the home folder of the current user. It's also possible to
     /// use to use environment variables by prefixing the name with a dollar sign (ex.: `$PATH`).
-    template: PathBuf,
+    pub template: PathBuf,
     /// LaTeX engine to be used. Defaults to xelatex.
-    engine: String,
+    pub engine: String,
     /// Set additional parameters to pandoc.
-    pandoc_options: Vec<String>,
+    pub pandoc_options: Option<Vec<String>>,
     /// Whether M4 should be executed on the input file or not.
-    do_m4: bool,
+    pub do_m4: bool,
     /// Path to bibliography file (JSON CTL).
-    bibliography: PathBuf,
+    pub bibliography: Option<PathBuf>,
 }
 
 impl<'a> Metadata {
@@ -134,11 +131,17 @@ impl<'a> Metadata {
     pub fn from(path: PathBuf) -> Result<Self, SmoothError<'a>> {
         let header = Header::from(path)?;
         Ok(Self {
-            template: Metadata::normalize_test_template(header.template).unwrap(),
+            template: Metadata::normalize_test_template(header.template)?,
             engine: header.engine,
-            pandoc_options: header.pandoc_optons.split_whitespace().map(|x| String::from(x)).collect(),
+            pandoc_options: match header.pandoc_optons {
+                Some(x) => Some(x.split_whitespace().map(|y| String::from(y)).collect()),
+                None => None,
+            },
             do_m4: header.do_m4,
-            bibliography: Metadata::normalize_test_bibliography(header.bibliography).unwrap(),
+            bibliography: match header.bibliography {
+                Some(x) => Some(Metadata::normalize_test_bibliography(x)?),
+                None => None,
+            },
         })
     }
 

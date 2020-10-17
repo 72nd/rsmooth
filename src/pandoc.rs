@@ -1,7 +1,10 @@
 /// This module contains all functions to call pandoc and handle any errors occurring mine while.
+use crate::metadata::Metadata;
+
 use std::borrow::Cow;
 use std::env;
 use std::fmt;
+use std::io::Error as IOError;
 use std::path::PathBuf;
 use std::process::Command;
 
@@ -46,6 +49,27 @@ impl<'a> PandocError<'a> {
             kind: ErrorKind::StringFromUtf8,
         }
     }
+
+    /// Returns a new ExecutionFailed error instance. Takes the stderr output of the pandoc
+    /// process.
+    fn execution_failed(err: Vec<u8>) -> Self {
+        Self {
+            input: None,
+            template: None,
+            output: None,
+            kind: ErrorKind::ExecutionFailed(String::from_utf8(err).unwrap()),
+        }
+    }
+
+    /// Returns a new CallingFailed error instance.
+    fn calling_failed(err: IOError) -> Self {
+        Self {
+            input: None,
+            template: None,
+            output: None,
+            kind: ErrorKind::CallingFailed(err),
+        }
+    }
 }
 
 impl fmt::Display for PandocError<'_> {
@@ -74,6 +98,16 @@ impl fmt::Display for PandocError<'_> {
                 f,
                 "couldn't convert standard output (stdout) from pandoc"
             ),
+            ErrorKind::ExecutionFailed(err) => write!(
+                f,
+                "pandoc failed with {}",
+                err
+            ),
+            ErrorKind::CallingFailed(err) => write!(
+                f,
+                "couldn't call pandoc {}",
+                err
+            ),
         }
     }
 }
@@ -90,6 +124,10 @@ pub enum ErrorKind<'a> {
     RelativePath(PathBuf, &'a str),
     /// Couldn't convert the Vec<u8> from the pandoc stdout to a string.
     StringFromUtf8,
+    /// The execution of pandoc failed. Contains the output of the stderr.
+    ExecutionFailed(String),
+    /// Calling pandoc failed. Contains
+    CallingFailed(IOError),
 }
 
 /// Wrapper for calling pandoc. Exposes all needed functionality via it's method.
@@ -140,6 +178,46 @@ impl<'a> Pandoc {
                 // TODO finish
                 println!("{}", e);
                 Ok(String::new())
+            }
+        }
+    }
+
+    /// Converts a given file with a template to a output file. Optionally it's possible to add
+    /// parameters to the pandoc call.
+    pub fn convert_with_metadata_to_file(
+        &self,
+        input: PathBuf,
+        metadata: Metadata,
+        output: PathBuf,
+    ) -> Result<(), PandocError<'a>> {
+        let mut cmd = Command::new(self.executable.clone());
+        cmd.arg(input)
+            .arg("--template")
+            .arg(metadata.template)
+            .arg("--pdf-engine")
+            .arg(metadata.engine)
+            .arg("--wrap=preserve");
+        if let Some(options) = metadata.pandoc_options {
+            cmd.args(options);
+        }
+        if let Some(bibliography) = metadata.bibliography {
+            cmd.arg("--filter")
+                .arg("pandoc-citeproc")
+                .arg("--bibliography")
+                .arg(bibliography);
+        }
+        cmd.arg("-o").arg(output);
+        match cmd.output() {
+            Ok(x) => {
+                if x.status.success() {
+                    Ok(())
+                } else {
+                    Err(PandocError::execution_failed(x.stderr))
+                }
+            }
+            Err(e) => {
+                println!("{}", e);
+                Err(PandocError::calling_failed(e))
             }
         }
     }

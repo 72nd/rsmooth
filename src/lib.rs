@@ -3,6 +3,7 @@ extern crate log;
 
 mod error;
 mod file;
+mod m4;
 mod metadata;
 mod pandoc;
 mod util;

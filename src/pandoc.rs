@@ -1,7 +1,6 @@
 /// This module contains all functions to call pandoc and handle any errors occurring mine while.
 use crate::metadata::Metadata;
 
-use std::borrow::Cow;
 use std::env;
 use std::fmt;
 use std::io::Error as IOError;
@@ -126,7 +125,7 @@ pub enum ErrorKind<'a> {
     StringFromUtf8,
     /// The execution of pandoc failed. Contains the output of the stderr.
     ExecutionFailed(String),
-    /// Calling pandoc failed. Contains
+    /// Calling pandoc failed. Contains the std::io::Error.
     CallingFailed(IOError),
 }
 

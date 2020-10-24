@@ -4,8 +4,7 @@ use crate::pandoc::Pandoc;
 use crate::util;
 
 use std::fs;
-use std::io::Write;
-use std::io::{self, Read};
+use std::io::{self, Write};
 use std::path::PathBuf;
 
 use tempfile::NamedTempFile;
@@ -40,8 +39,9 @@ impl<'a> File {
     pub fn convert(self) -> Result<(), SmoothError<'a>> {
         let metadata = Metadata::from(self.path.clone())?;
 
+        let mut content = self.read_source()?;
         let mut current = File::temporary_file_from_source(self.path.clone())?;
-
+        current.write_all(content.as_bytes());
 
         // TODO: Do Verse break
         match Pandoc::new().convert_with_metadata_to_file(current, metadata, self.ouput_path) {
@@ -51,7 +51,13 @@ impl<'a> File {
     }
 
     /// Reads the input file and returns the content as a string. This is used to apply all
-    /// internal filters 
+    /// internal filters.
+    fn read_source(self) -> Result<String, SmoothError<'a>> {
+        match fs::read_to_string(self.path.clone()) {
+            Ok(x) => Ok(x),
+            Err(e) => Err(SmoothError::ReadSourceFailed(self.path, e)),
+        }
+    }
 
     /// Takes the input path of a markdown document and returns the same path with the .pdf
     /// extension. Used when no output path is specified. This function will be useful when rsmooth

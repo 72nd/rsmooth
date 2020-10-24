@@ -5,7 +5,7 @@ mod error;
 mod file;
 mod metadata;
 mod pandoc;
-mod templating;
+mod filters;
 mod util;
 
 use file::File;

@@ -13,7 +13,7 @@ pub enum SmoothError<'a> {
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
     /// handling of pandoc (-errors) see the pandoc module.
     Pandoc(PandocError<'a>),
-    /// Error occurring while applying the template.
+    /// Error occurring while applying the template filter.
     Templating(TemplatingError),
     /// Working folder couldn't be determined.
     WdNotFound,
@@ -51,7 +51,7 @@ impl fmt::Display for SmoothError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             SmoothError::Pandoc(err) => write!(f, "pandoc error: {}", err),
-            SmoothError::Templating(err) => write!(f, "template error: {}", err),
+            SmoothError::Templating(err) => write!(f, "template filter error: {}", err),
             SmoothError::WdNotFound => write!(f, "working directory couldn't be determined"),
             SmoothError::LookupError(path) => {
                 write!(f, "some environment variables not found in path {}", path)

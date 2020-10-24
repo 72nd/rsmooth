@@ -50,6 +50,9 @@ impl<'a> File {
         }
     }
 
+    /// Reads the input file and returns the content as a string. This is used to apply all
+    /// internal filters 
+
     /// Takes the input path of a markdown document and returns the same path with the .pdf
     /// extension. Used when no output path is specified. This function will be useful when rsmooth
     /// also allows the export to other files than PDFs.

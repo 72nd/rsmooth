@@ -3,7 +3,7 @@ use std::fmt;
 
 use tera::Error as TeraError;
 
-/// Contains the errors which can occur while the execution of
+/// Contains the errors which can occur while the execution of the template filter
 pub enum TemplatingError {
     /// Some tera error.
     Tera(TeraError),
@@ -24,3 +24,11 @@ impl fmt::Debug for TemplatingError {
 }
 
 impl Error for TemplatingError {}
+
+/// The template filter applies the tera template engine on the given string.
+pub struct Template {
+    /// Raw data to be processed by the template engine.
+    data: String,
+    /// Path to the parent folder where the data originates. This is used to make relative paths
+    /// used in the source reachable.
+}

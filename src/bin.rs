@@ -6,7 +6,7 @@ use clap::{App, AppSettings, Arg, ArgMatches};
 /// Default CLI interface for rsmooth-lib.
 pub fn main() {
     let matches = App::new("rsmooth")
-        .version("0.2.0")
+        .version("0.3.0")
         .author("72nd <msg@frg72.com>")
         .about("simple tool chain/wrapper for pandoc.")
         .setting(AppSettings::ArgRequiredElseHelp)

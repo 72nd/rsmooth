@@ -59,7 +59,7 @@ impl From<FilterError> for SmoothError<'_> {
 impl fmt::Display for SmoothError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            SmoothError::Pandoc(err) => write!(f, "pandoc error: {}", err),
+            SmoothError::Pandoc(err) => write!(f, "{}", err),
             SmoothError::Filter(err) => write!(f, "{} filter error: {}", err.name, err.description),
             SmoothError::WdNotFound => write!(f, "working directory couldn't be determined"),
             SmoothError::LookupError(path) => {

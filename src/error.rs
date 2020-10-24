@@ -1,5 +1,5 @@
+use crate::filters::FilterError;
 use crate::pandoc::PandocError;
-use crate::templating::TemplatingError;
 
 use std::error::Error;
 use std::fmt;
@@ -9,12 +9,12 @@ use std::path::PathBuf;
 use serde_json::error::Error as JsonError;
 
 /// The error type for errors which can occur while running rsmooth.
-pub enum SmoothError<'a> {
+pub enum SmoothError<'a>{
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
     /// handling of pandoc (-errors) see the pandoc module.
     Pandoc(PandocError<'a>),
-    /// Error occurring while applying the template filter.
-    Templating(TemplatingError),
+    /// Error occurring while applying the filters.
+    Filter(FilterError),
     /// Working folder couldn't be determined.
     WdNotFound,
     /// Lookup error of shellexpand for paths. Contains the erroneous path.  
@@ -51,7 +51,7 @@ impl fmt::Display for SmoothError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             SmoothError::Pandoc(err) => write!(f, "pandoc error: {}", err),
-            SmoothError::Templating(err) => write!(f, "template filter error: {}", err),
+            SmoothError::Filter(err) => write!(f, "{} filter error: {}", err.name, err.description),
             SmoothError::WdNotFound => write!(f, "working directory couldn't be determined"),
             SmoothError::LookupError(path) => {
                 write!(f, "some environment variables not found in path {}", path)

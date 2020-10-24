@@ -2,6 +2,7 @@ use crate::error::SmoothError;
 use crate::pandoc::Pandoc;
 use crate::util;
 
+use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::io::prelude::*;
@@ -30,8 +31,10 @@ struct Header {
     // #[serde(default = "default_pandoc_options")]
     pandoc_optons: Option<String>,
     /// Whether templating should be executed on the input file or not.
-    #[serde(default = "default_do_templating")]
-    do_templating: bool,
+    #[serde(default = "default_do_template")]
+    do_template: bool,
+    /// Optional template context aka. variables etc.
+    pub template_context: Option<HashMap<String, String>>,
     /// Whether newline should break text in description texts. This is especially useful when
     /// using description lists for screen- and stageplays.
     #[serde(default = "default_break_description")]
@@ -46,9 +49,9 @@ fn default_engine() -> String {
     String::from("xelatex")
 }
 
-/// Returns the default value (false) for the do_templating field. Used, when the field is not set in
+/// Returns the default value (false) for the do_template field. Used, when the field is not set in
 /// the metadata.
-fn default_do_templating() -> bool {
+fn default_do_template() -> bool {
     false
 }
 
@@ -132,7 +135,9 @@ pub struct Metadata {
     /// Set additional parameters to pandoc.
     pub pandoc_options: Option<Vec<String>>,
     /// Whether templating should be executed on the input file or not.
-    pub do_templating: bool,
+    pub do_template: bool,
+    /// Optional template context aka. variables etc.
+    pub template_context: Option<HashMap<String, String>>,
     /// Whether newline should break text in description texts. This is especially useful when
     /// using description lists for screen- and stageplays.
     pub break_description: bool,
@@ -152,7 +157,8 @@ impl<'a> Metadata {
                 Some(x) => Some(x.split_whitespace().map(|y| String::from(y)).collect()),
                 None => None,
             },
-            do_templating: header.do_templating,
+            do_template: header.do_template,
+            template_context: header.template_context,
             break_description: header.break_description,
             bibliography: match header.bibliography {
                 Some(x) => Some(Metadata::normalize_test_bibliography(x)?),

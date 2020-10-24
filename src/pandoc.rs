@@ -7,6 +7,8 @@ use std::io::Error as IOError;
 use std::path::PathBuf;
 use std::process::Command;
 
+use tempfile::NamedTempFile;
+
 /// Default name of the pandoc executable. Will be used when no other name is defined via the
 /// `PANDOC_ENV` constant of this module.
 const PANDOC_CMD: &str = "pandoc";
@@ -129,23 +131,19 @@ pub enum ErrorKind<'a> {
     CallingFailed(IOError),
 }
 
-/// Wrapper for calling pandoc. Exposes all needed functionality via it's method.
-pub struct Pandoc {
-    /// Name of the pandoc executable.
-    executable: String,
-}
+/// Wrapper for calling pandoc. Exposes all needed functionality via it's method. Contains the
+/// executable name for pandoc.
+pub struct Pandoc(String);
 
 impl<'a> Pandoc {
     /// Returns a new instance of the Pandoc struct. Will use the `PANDOC_CMD` environment variable
     /// to determine the name of the pandoc executable. If the variable isn't set the constant
     /// PANDOC_CMD will be used.
     pub fn new() -> Self {
-        Self {
-            executable: match env::var(PANDOC_ENV) {
-                Ok(x) => x,
-                Err(_) => String::from(PANDOC_CMD),
-            },
-        }
+        Self(match env::var(PANDOC_ENV) {
+            Ok(x) => x,
+            Err(_) => String::from(PANDOC_CMD),
+        })
     }
 
     /// Converts a given file with a template and returns the result as a string. This function is
@@ -163,7 +161,7 @@ impl<'a> Pandoc {
             template.display()
         );
 
-        match Command::new(self.executable.clone())
+        match Command::new(self.0.clone())
             .arg("--template")
             .arg(template)
             .arg(input)
@@ -185,12 +183,12 @@ impl<'a> Pandoc {
     /// parameters to the pandoc call.
     pub fn convert_with_metadata_to_file(
         &self,
-        input: PathBuf,
+        input: NamedTempFile,
         metadata: Metadata,
         output: PathBuf,
     ) -> Result<(), PandocError<'a>> {
-        let mut cmd = Command::new(self.executable.clone());
-        cmd.arg(input)
+        let mut cmd = Command::new(self.0.clone());
+        cmd.arg(input.path())
             .arg("--template")
             .arg(metadata.template)
             .arg("--pdf-engine")

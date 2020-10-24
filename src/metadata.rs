@@ -29,9 +29,9 @@ struct Header {
     /// Set additional parameters to pandoc.
     // #[serde(default = "default_pandoc_options")]
     pandoc_optons: Option<String>,
-    /// Whether M4 should be executed on the input file or not.
-    #[serde(default = "default_do_m4")]
-    do_m4: bool,
+    /// Whether templating should be executed on the input file or not.
+    #[serde(default = "default_do_templating")]
+    do_templating: bool,
     /// Whether newline should break text in description texts. This is especially useful when
     /// using description lists for screen- and stageplays.
     #[serde(default = "default_break_description")]
@@ -46,9 +46,9 @@ fn default_engine() -> String {
     String::from("xelatex")
 }
 
-/// Returns the default value (false) for the do_m4 field. Used, when the field is not set in
+/// Returns the default value (false) for the do_templating field. Used, when the field is not set in
 /// the metadata.
-fn default_do_m4() -> bool {
+fn default_do_templating() -> bool {
     false
 }
 
@@ -109,6 +109,18 @@ impl<'a> Header {
     }
 }
 
+/// Contains the last step of conversion which will be done according to the configuration in the
+/// metadata.
+#[derive(Debug)]
+pub enum LastStep {
+    /// No extra steps, pandoc get's the input file given by the user.
+    Nothing,
+    /// Only m4 was called. Pandoc gets the temporary file with the m4 output.
+    M4,
+    /// Description break was executed. Pandoc gets this temporary file.
+    DescBreak,
+}
+
 #[derive(Debug)]
 pub struct Metadata {
     /// Path to the pandoc template file can be absolute or relative to the markdown file. Tilde
@@ -119,8 +131,11 @@ pub struct Metadata {
     pub engine: String,
     /// Set additional parameters to pandoc.
     pub pandoc_options: Option<Vec<String>>,
-    /// Whether M4 should be executed on the input file or not.
-    pub do_m4: bool,
+    /// Whether templating should be executed on the input file or not.
+    pub do_templating: bool,
+    /// Whether newline should break text in description texts. This is especially useful when
+    /// using description lists for screen- and stageplays.
+    pub break_description: bool,
     /// Path to bibliography file (JSON CTL).
     pub bibliography: Option<PathBuf>,
 }
@@ -137,7 +152,8 @@ impl<'a> Metadata {
                 Some(x) => Some(x.split_whitespace().map(|y| String::from(y)).collect()),
                 None => None,
             },
-            do_m4: header.do_m4,
+            do_templating: header.do_templating,
+            break_description: header.break_description,
             bibliography: match header.bibliography {
                 Some(x) => Some(Metadata::normalize_test_bibliography(x)?),
                 None => None,

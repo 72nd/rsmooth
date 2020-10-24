@@ -1,4 +1,5 @@
 use crate::pandoc::PandocError;
+use crate::templating::TemplatingError;
 
 use std::error::Error;
 use std::fmt;
@@ -12,8 +13,8 @@ pub enum SmoothError<'a> {
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
     /// handling of pandoc (-errors) see the pandoc module.
     Pandoc(PandocError<'a>),
-    /// M4 was enabled but executable wasn't found on the system.
-    M4Missing,
+    /// Error occurring while applying the template.
+    Templating(TemplatingError),
     /// Working folder couldn't be determined.
     WdNotFound,
     /// Lookup error of shellexpand for paths. Contains the erroneous path.  
@@ -40,26 +41,34 @@ pub enum SmoothError<'a> {
     /// The given bibliography path as specified in the metadata header was not found with the given
     /// path.
     BibliographyNotFound(PathBuf),
+    /// Error while creating a temporary file. Contains the error.
+    TemporaryFile(IOError),
+    /// Couldn't read source file.
+    ReadSourceFailed(PathBuf, IOError),
 }
 
 impl fmt::Display for SmoothError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             SmoothError::Pandoc(err) => write!(f, "pandoc error: {}", err),
-            SmoothError::M4Missing => write!(
-                f,
-                "m4 was enabled in metadata-header but executable isn't present on system"
-            ),
+            SmoothError::Templating(err) => write!(f, "template error: {}", err),
             SmoothError::WdNotFound => write!(f, "working directory couldn't be determined"),
             SmoothError::LookupError(path) => {
                 write!(f, "some environment variables not found in path {}", path)
             }
-            SmoothError::InputFileNotFound(given, normalized) => write!(
-                f,
-                "input file \"{}\" couldn't be found under normalized path \"{}\"",
-                given,
-                normalized.display()
-            ),
+            SmoothError::InputFileNotFound(given, normalized) => match given == &normalized.as_os_str() {
+                true => write!(
+                    f,
+                    "input file \"{}\" couldn't be found",
+                    given,
+                ),
+                false => write!(
+                    f,
+                    "input file \"{}\" couldn't be found under normalized path \"{}\"",
+                    given,
+                    normalized.display(),
+                ),
+            },
             SmoothError::MetadataRead(path) => write!(
                 f,
                 "YAML header for input file \"{}\" couldn't be read",
@@ -96,6 +105,17 @@ impl fmt::Display for SmoothError<'_> {
                 f,
                 "couldn't find bibliography file under {}",
                 path.display()
+            ),
+            SmoothError::TemporaryFile(err) => write!(
+                f,
+                "couldn't create temporary file {}",
+                err
+            ),
+            SmoothError::ReadSourceFailed(file, err) => write!(
+                f,
+                "couldn't read the content of the given markdown file {} {}",
+                file.display(),
+                err
             ),
         }
     }

@@ -3,7 +3,12 @@ use crate::metadata::Metadata;
 use crate::pandoc::Pandoc;
 use crate::util;
 
-use std::path::{Path, PathBuf};
+use std::fs;
+use std::io::Write;
+use std::io::{self, Read};
+use std::path::PathBuf;
+
+use tempfile::NamedTempFile;
 
 /// Describes the (root) markdown file which should be converted.
 pub struct File {
@@ -34,9 +39,12 @@ impl<'a> File {
     /// Converts the loaded markdown file.
     pub fn convert(self) -> Result<(), SmoothError<'a>> {
         let metadata = Metadata::from(self.path.clone())?;
-        // TODO: Do M4
+
+        let mut current = File::temporary_file_from_source(self.path.clone())?;
+
+
         // TODO: Do Verse break
-        match Pandoc::new().convert_with_metadata_to_file(self.path, metadata, self.ouput_path) {
+        match Pandoc::new().convert_with_metadata_to_file(current, metadata, self.ouput_path) {
             Ok(_) => Ok(()),
             Err(e) => Err(SmoothError::Pandoc(e)),
         }
@@ -47,5 +55,26 @@ impl<'a> File {
     /// also allows the export to other files than PDFs.
     fn out_path_from_input(input: PathBuf) -> PathBuf {
         input.with_extension("pdf")
+    }
+
+    /// Encapsulates the instantiating of a new NamedTempFile and returns the appropriate smooth
+    /// error on error.
+    fn new_named_tempfile() -> Result<NamedTempFile, SmoothError<'a>> {
+        match NamedTempFile::new() {
+            Ok(x) => Ok(x),
+            Err(e) => Err(SmoothError::TemporaryFile(e)),
+        }
+    }
+
+    /// Creates a temporary file with the content of the source file.
+    fn temporary_file_from_source(path: PathBuf) -> Result<NamedTempFile, SmoothError<'a>> {
+        let mut file = File::new_named_tempfile()?;
+        match file.write_all(&match fs::read(path.clone()) {
+            Ok(x) => x,
+            Err(e) => return Err(SmoothError::ReadSourceFailed(path, e)),
+        }) {
+            Ok(_) => Ok(file),
+            Err(e) => return Err(SmoothError::TemporaryFile(e)),
+        }
     }
 }

@@ -1,5 +1,3 @@
-use std::fmt;
-
 mod template;
 
 pub use template::{Template, TemplateError};
@@ -11,8 +9,7 @@ pub struct FilterError {
 }
 
 /// Defines the constitution of an filter.
-pub trait Filter
-{
+pub trait Filter {
     /// Applies the filter to a given markdown source and returns the result as a string.
     fn apply(self, data: String) -> Result<String, FilterError>;
 }

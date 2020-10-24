@@ -112,19 +112,7 @@ impl<'a> Header {
     }
 }
 
-/// Contains the last step of conversion which will be done according to the configuration in the
-/// metadata.
-#[derive(Debug)]
-pub enum LastStep {
-    /// No extra steps, pandoc get's the input file given by the user.
-    Nothing,
-    /// Only m4 was called. Pandoc gets the temporary file with the m4 output.
-    M4,
-    /// Description break was executed. Pandoc gets this temporary file.
-    DescBreak,
-}
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Metadata {
     /// Path to the pandoc template file can be absolute or relative to the markdown file. Tilde
     /// (`~`) can be used to refer to the home folder of the current user. It's also possible to

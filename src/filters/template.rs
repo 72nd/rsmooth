@@ -28,7 +28,6 @@ impl From<TemplateError> for FilterError {
     }
 }
 
-
 /// The template filter applies the tera template engine on the given string.
 pub struct Template {
     /// Path to the parent folder where the data originates. This is used to make relative paths
@@ -44,11 +43,11 @@ impl Template {
     pub fn new(
         input_file: PathBuf,
         context: Option<HashMap<String, String>>,
-    ) -> Result<Self, TemplateError> {
+    ) -> Result<Self, FilterError> {
         Ok(Self {
             wd: match input_file.parent() {
                 Some(x) => x.to_path_buf(),
-                None => return Err(TemplateError::NoParentFolder(input_file)),
+                None => return Err(TemplateError::NoParentFolder(input_file).into()),
             },
             context: match context {
                 Some(x) => x,
@@ -60,7 +59,9 @@ impl Template {
 
 impl Filter for Template {
     fn apply(self, data: String) -> Result<String, FilterError> {
-        let tpl = match Tera::new(self.wd.join("/**/*").as_os_str().to_str().unwrap()) {
+        let mut pth = self.wd;
+        pth.push("**/*.md");
+        let mut tpl = match Tera::new(pth.as_os_str().to_str().unwrap()) {
             Ok(x) => x,
             Err(e) => return Err(TemplateError::Tera(e).into()),
         };
@@ -68,6 +69,9 @@ impl Filter for Template {
             Ok(x) => x,
             Err(e) => return Err(TemplateError::Tera(e).into()),
         };
-        Ok(String::new())
+        match tpl.render_str(&data, &ctx) {
+            Ok(x) => Ok(x),
+            Err(e) => Err(TemplateError::Tera(e).into()),
+        }
     }
 }

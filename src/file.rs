@@ -1,10 +1,11 @@
 use crate::error::SmoothError;
+use crate::filters::{Filter, Template};
 use crate::metadata::Metadata;
 use crate::pandoc::Pandoc;
 use crate::util;
 
 use std::fs;
-use std::io::{self, Write};
+use std::io::Write;
 use std::path::PathBuf;
 
 use tempfile::NamedTempFile;
@@ -40,8 +41,16 @@ impl<'a> File {
         let metadata = Metadata::from(self.path.clone())?;
 
         let mut content = self.read_source()?;
-        let mut current = File::temporary_file_from_source(self.path.clone())?;
-        current.write_all(content.as_bytes());
+        if metadata.do_template {
+            content = Template::new(self.path.clone(), metadata.clone().template_context)?
+                .apply(content)?;
+        }
+
+        let mut current = File::new_named_tempfile()?;
+        match current.write_all(content.as_bytes()) {
+            Ok(_) => {}
+            Err(e) => return Err(SmoothError::WriteFailed(current.path().to_path_buf(), e)),
+        };
 
         // TODO: Do Verse break
         match Pandoc::new().convert_with_metadata_to_file(current, metadata, self.ouput_path) {
@@ -52,10 +61,10 @@ impl<'a> File {
 
     /// Reads the input file and returns the content as a string. This is used to apply all
     /// internal filters.
-    fn read_source(self) -> Result<String, SmoothError<'a>> {
+    fn read_source(&self) -> Result<String, SmoothError<'a>> {
         match fs::read_to_string(self.path.clone()) {
             Ok(x) => Ok(x),
-            Err(e) => Err(SmoothError::ReadSourceFailed(self.path, e)),
+            Err(e) => Err(SmoothError::ReadSourceFailed(self.path.clone(), e)),
         }
     }
 
@@ -72,18 +81,6 @@ impl<'a> File {
         match NamedTempFile::new() {
             Ok(x) => Ok(x),
             Err(e) => Err(SmoothError::TemporaryFile(e)),
-        }
-    }
-
-    /// Creates a temporary file with the content of the source file.
-    fn temporary_file_from_source(path: PathBuf) -> Result<NamedTempFile, SmoothError<'a>> {
-        let mut file = File::new_named_tempfile()?;
-        match file.write_all(&match fs::read(path.clone()) {
-            Ok(x) => x,
-            Err(e) => return Err(SmoothError::ReadSourceFailed(path, e)),
-        }) {
-            Ok(_) => Ok(file),
-            Err(e) => return Err(SmoothError::TemporaryFile(e)),
         }
     }
 }

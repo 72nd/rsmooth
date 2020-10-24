@@ -1,6 +1,7 @@
 use crate::filters::FilterError;
 use crate::pandoc::PandocError;
 
+use std::convert::From;
 use std::error::Error;
 use std::fmt;
 use std::io::Error as IOError;
@@ -9,7 +10,7 @@ use std::path::PathBuf;
 use serde_json::error::Error as JsonError;
 
 /// The error type for errors which can occur while running rsmooth.
-pub enum SmoothError<'a>{
+pub enum SmoothError<'a> {
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
     /// handling of pandoc (-errors) see the pandoc module.
     Pandoc(PandocError<'a>),
@@ -45,6 +46,14 @@ pub enum SmoothError<'a>{
     TemporaryFile(IOError),
     /// Couldn't read source file.
     ReadSourceFailed(PathBuf, IOError),
+    /// Write file failed.
+    WriteFailed(PathBuf, IOError),
+}
+
+impl From<FilterError> for SmoothError<'_> {
+    fn from(item: FilterError) -> Self {
+        Self::Filter(item)
+    }
 }
 
 impl fmt::Display for SmoothError<'_> {
@@ -116,6 +125,12 @@ impl fmt::Display for SmoothError<'_> {
                 "couldn't read the content of the given markdown file {} {}",
                 file.display(),
                 err
+            ),
+            SmoothError::WriteFailed(file, err) => write!(
+                f,
+                "couldn't write to file {} {}",
+                file.display(),
+                err,
             ),
         }
     }

@@ -1,5 +1,6 @@
 use crate::filters::FilterError;
 use crate::pandoc::PandocError;
+use crate::util::NormalizeError;
 
 use std::convert::From;
 use std::error::Error;
@@ -11,15 +12,13 @@ use serde_json::error::Error as JsonError;
 
 /// The error type for errors which can occur while running rsmooth.
 pub enum SmoothError<'a> {
+    /// Normalize Error occurred.
+    NormalizeError(NormalizeError),
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
     /// handling of pandoc (-errors) see the pandoc module.
     Pandoc(PandocError<'a>),
     /// Error occurring while applying the filters.
     Filter(FilterError),
-    /// Working folder couldn't be determined.
-    WdNotFound,
-    /// Lookup error of shellexpand for paths. Contains the erroneous path.  
-    LookupError(String),
     /// The input file was not found under the given path.
     InputFileNotFound(&'a str, PathBuf),
     /// Couldn't read the Frontmatter YAML Header of the input file. String resembles the path to
@@ -56,15 +55,18 @@ impl From<FilterError> for SmoothError<'_> {
     }
 }
 
+impl From<NormalizeError> for SmoothError<'_> {
+    fn from(item: NormalizeError) -> Self {
+        Self::NormalizeError(item)
+    }
+}
+
 impl fmt::Display for SmoothError<'_> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
+            SmoothError::NormalizeError(err) => write!(f, "path normalize error {}", err),
             SmoothError::Pandoc(err) => write!(f, "{}", err),
             SmoothError::Filter(err) => write!(f, "{} filter error: {}", err.name, err.description),
-            SmoothError::WdNotFound => write!(f, "working directory couldn't be determined"),
-            SmoothError::LookupError(path) => {
-                write!(f, "some environment variables not found in path {}", path)
-            }
             SmoothError::InputFileNotFound(given, normalized) => match given == &normalized.as_os_str() {
                 true => write!(
                     f,

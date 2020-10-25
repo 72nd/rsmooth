@@ -158,7 +158,7 @@ impl<'a> Metadata {
     /// Takes the path to the template file and returns a normalized absolute PathBuf. Also tests if
     /// the file exists.
     fn normalize_test_template(path: String) -> Result<PathBuf, SmoothError<'a>> {
-        let rsl = util::normalize_path(&path)?;
+        let rsl = util::normalize_path(&path, None)?;
         match rsl.exists() {
             true => Ok(rsl),
             false => Err(SmoothError::TemplateNotFound(rsl)),
@@ -168,7 +168,7 @@ impl<'a> Metadata {
     /// Takes the path to the default_bibliography file and returns a normalized absolute PathBuf. Also tests if
     /// the file exists.
     fn normalize_test_bibliography(path: String) -> Result<PathBuf, SmoothError<'a>> {
-        let rsl = util::normalize_path(&path)?;
+        let rsl = util::normalize_path(&path, None)?;
         match rsl.exists() {
             true => Ok(rsl),
             false => Err(SmoothError::BibliographyNotFound(rsl)),

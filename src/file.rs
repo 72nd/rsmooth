@@ -23,14 +23,14 @@ impl<'a> File {
     /// defined, otherwise the same folder and file name as the input file will be used.
     pub fn new<S: Into<&'a str>>(path: S, output_path: Option<S>) -> Result<Self, SmoothError<'a>> {
         let in_path = path.into();
-        let norm_in_path = util::normalize_path(in_path)?;
+        let norm_in_path = util::normalize_path(in_path, None)?;
         if !norm_in_path.exists() {
             return Err(SmoothError::InputFileNotFound(in_path, norm_in_path));
         }
         Ok(Self {
             path: norm_in_path.clone(),
             ouput_path: match output_path {
-                Some(x) => util::normalize_path(x.into())?,
+                Some(x) => util::normalize_path(x.into(), None)?,
                 None => File::out_path_from_input(norm_in_path),
             },
         })
@@ -42,13 +42,15 @@ impl<'a> File {
         let metadata = Metadata::from(self.path.clone())?;
 
         let mut content = self.read_source()?;
-        content = ExpandPaths::new(&self.path, vec![ExpandOn::TeraIncludes])?.apply(content)?;
-        println!("{}", content);
+        // content = ExpandPaths::new(&self.path, vec![ExpandOn::TeraIncludes])?.apply(content)?;
 
         if metadata.do_template {
             content =
                 Template::new(&self.path, metadata.clone().template_context)?.apply(content)?;
         }
+
+        content = ExpandPaths::new(&self.path, vec![ExpandOn::EmbeddedLinks])?.apply(content)?;
+        println!("{}", content);
 
         let mut current = File::new_named_tempfile()?;
         match current.write_all(content.as_bytes()) {

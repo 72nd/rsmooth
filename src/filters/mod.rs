@@ -1,5 +1,7 @@
+mod expand_paths;
 mod template;
 
+pub use expand_paths::*;
 pub use template::{Template, TemplateError};
 
 /// Describes errors from a filter.

@@ -157,12 +157,12 @@ impl<'a> Pandoc {
     /// parameters to the pandoc call.
     pub fn convert_with_metadata_to_file(
         &self,
-        input: NamedTempFile,
+        input: &PathBuf,
         metadata: Metadata,
         output: PathBuf,
     ) -> Result<(), PandocError<'a>> {
         let mut cmd = Command::new(self.0.clone());
-        cmd.arg(input.path())
+        cmd.arg(&input)
             .arg("--template")
             .arg(&metadata.template)
             .arg("--pdf-engine")
@@ -182,7 +182,7 @@ impl<'a> Pandoc {
             cmd.output(),
             self.0.clone(),
             false,
-            String::from(input.path().to_str().unwrap()),
+            String::from(input.to_str().unwrap()),
             String::from(output.to_str().unwrap()),
             String::from(metadata.template.to_str().unwrap()),
         ) {

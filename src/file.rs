@@ -1,5 +1,5 @@
 use crate::error::SmoothError;
-use crate::filters::{Filter, Template};
+use crate::filters::{ExpandOn, ExpandPaths, Filter, Template};
 use crate::metadata::Metadata;
 use crate::pandoc::Pandoc;
 use crate::util;
@@ -36,14 +36,18 @@ impl<'a> File {
         })
     }
 
-    /// Converts the loaded markdown file.
-    pub fn convert(self) -> Result<(), SmoothError<'a>> {
+    /// Converts the loaded markdown file. The keep_temp parameter states whether the temporary
+    /// pandoc input file should be kept for debugging purposes.
+    pub fn convert(self, keep_temp: bool) -> Result<(), SmoothError<'a>> {
         let metadata = Metadata::from(self.path.clone())?;
 
         let mut content = self.read_source()?;
+        content = ExpandPaths::new(&self.path, vec![ExpandOn::TeraIncludes])?.apply(content)?;
+        println!("{}", content);
+
         if metadata.do_template {
-            content = Template::new(self.path.clone(), metadata.clone().template_context)?
-                .apply(content)?;
+            content =
+                Template::new(&self.path, metadata.clone().template_context)?.apply(content)?;
         }
 
         let mut current = File::new_named_tempfile()?;
@@ -51,9 +55,25 @@ impl<'a> File {
             Ok(_) => {}
             Err(e) => return Err(SmoothError::WriteFailed(current.path().to_path_buf(), e)),
         };
+        let prepared_input = current.path().to_path_buf();
 
         // TODO: Do Verse break
-        match Pandoc::new().convert_with_metadata_to_file(current, metadata, self.ouput_path) {
+        if keep_temp {
+            info!(
+                "prepared temporary input pandoc file {} will be kept",
+                prepared_input.display(),
+            );
+            match current.keep() {
+                Ok(_) => {}
+                Err(e) => error!("failed to keep file {}", e),
+            };
+        }
+
+        match Pandoc::new().convert_with_metadata_to_file(
+            &prepared_input,
+            metadata,
+            self.ouput_path,
+        ) {
             Ok(_) => Ok(()),
             Err(e) => Err(SmoothError::Pandoc(e)),
         }

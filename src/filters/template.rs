@@ -41,13 +41,13 @@ impl Template {
     /// Takes the path of the input markdown file and an optional hash map for the template
     /// context. Returns an instance of the template filter.
     pub fn new(
-        input_file: PathBuf,
+        input_file: &PathBuf,
         context: Option<HashMap<String, String>>,
     ) -> Result<Self, FilterError> {
         Ok(Self {
             wd: match input_file.parent() {
                 Some(x) => x.to_path_buf(),
-                None => return Err(TemplateError::NoParentFolder(input_file).into()),
+                None => return Err(TemplateError::NoParentFolder(input_file.to_path_buf()).into()),
             },
             context: match context {
                 Some(x) => x,

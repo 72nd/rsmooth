@@ -1,5 +1,3 @@
-use crate::error::SmoothError;
-
 use std::env;
 use std::error::Error;
 use std::fmt;

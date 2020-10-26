@@ -7,8 +7,6 @@ use std::io::{self, Error as IOError, ErrorKind};
 use std::path::PathBuf;
 use std::process::{Command, Output};
 
-use tempfile::NamedTempFile;
-
 /// Default name of the pandoc executable. Will be used when no other name is defined via the
 /// `PANDOC_ENV` constant of this module.
 const PANDOC_CMD: &str = "pandoc";

@@ -25,10 +25,10 @@ pub fn main() {
                 .index(1),
         )
         .arg(
-            Arg::new("keep-temp")
-                .about("keeps the temp pandoc input file for debugging")
-                .long("keep-temp")
-                .short('k')
+            Arg::new("raw")
+                .about("outputs the finalized pandoc input on the stdout for debugging")
+                .long("raw")
+                .short('r')
                 .global(true),
         )
         .arg(
@@ -71,7 +71,7 @@ fn default_cmd(matches: &ArgMatches) {
     match lib::convert(
         matches.value_of("INPUT").unwrap(),
         matches.value_of("output"),
-        matches.is_present("keep-temp"),
+        matches.is_present("raw"),
     ) {
         Ok(_) => {}
         Err(e) => error!("{}", e),

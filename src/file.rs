@@ -38,7 +38,7 @@ impl<'a> File {
 
     /// Converts the loaded markdown file. The keep_temp parameter states whether the temporary
     /// pandoc input file should be kept for debugging purposes.
-    pub fn convert(self, keep_temp: bool) -> Result<(), SmoothError<'a>> {
+    pub fn convert(self, output_raw: bool) -> Result<(), SmoothError<'a>> {
         let metadata = Metadata::from(self.path.clone())?;
 
         let mut content = self.read_source()?;
@@ -50,7 +50,6 @@ impl<'a> File {
         }
 
         content = ExpandPaths::new(&self.path, vec![ExpandOn::EmbeddedLinks])?.apply(content)?;
-        println!("{}", content);
 
         let mut current = File::new_named_tempfile()?;
         match current.write_all(content.as_bytes()) {
@@ -60,15 +59,8 @@ impl<'a> File {
         let prepared_input = current.path().to_path_buf();
 
         // TODO: Do Verse break
-        if keep_temp {
-            info!(
-                "prepared temporary input pandoc file {} will be kept",
-                prepared_input.display(),
-            );
-            match current.keep() {
-                Ok(_) => {}
-                Err(e) => error!("failed to keep file {}", e),
-            };
+        if output_raw {
+            println!("{}", content)
         }
 
         match Pandoc::new().convert_with_metadata_to_file(

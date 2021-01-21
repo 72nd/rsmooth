@@ -8,7 +8,7 @@ use std::fs;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
 use serde_json;
 
 /// Name of the temporary pandoc template for extracting the header of a markdown file as JSON.
@@ -31,7 +31,7 @@ struct Header {
     // #[serde(default = "default_pandoc_options")]
     pandoc_optons: Option<String>,
     /// Whether templating should be executed on the input file or not.
-    #[serde(default = "default_do_template")]
+    #[serde(default = "default_do_template", deserialize_with = "bool_from_str" )]
     do_template: bool,
     /// Optional template context aka. variables etc.
     pub template_context: Option<HashMap<String, String>>,
@@ -59,6 +59,19 @@ fn default_do_template() -> bool {
 /// not set in the metadata.
 fn default_break_description() -> bool {
     false
+}
+
+/// Parses a string as boolean. This is needed as Pandoc converts boolean values in the YAML
+/// Frontmatter header to a string in JSON.
+fn bool_from_str<'de, D>(deserializer: D) -> Result<bool, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let raw: &str = Deserialize::deserialize(deserializer)?;
+    match raw {
+        "true" => Ok(true),
+        _ => Ok(false),
+    }
 }
 
 impl<'a> Header {

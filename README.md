@@ -9,7 +9,7 @@ To allow for even more flexibility it's possible t
 
 Take this simple file as a example (`example.md`):
 
-```md
+```markdown
 
 ---
 title: A Sample Document
@@ -33,7 +33,7 @@ This will create `example.pdf`. If you want to specify another name of the PDF u
 
 By using the YAML header (front matter) you can alter the behavior of rsmooth and use additional features.
 
-Note: The whole content of the 
+Note: The whole content of the YAML header will be also available to pandoc and can thus be used in the template files using the `$VAR_NAME$` syntax.
 
 
 ### A word on paths
@@ -43,7 +43,7 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 ### Options
 
-`template` Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates).
+**`template`** Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates).
 
 `engine` Name of the LaTeX engine used to create the PDF document. This internally will set the [--pdf-engine](https://pandoc.org/MANUAL.html#option--pdf-engine) option of pandoc. This option defaults to `xelatex` (as this is what I'm working with).
 

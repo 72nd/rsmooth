@@ -26,3 +26,4 @@
 - [ ] Reveal.js integration
 - [ ] Libre Office/Word output
 - [ ] PDF export using Libre Office
+- [ ] Allow more complex template_context values

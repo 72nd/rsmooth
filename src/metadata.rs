@@ -23,7 +23,7 @@ struct Header {
     /// Path to the pandoc template file can be absolute or relative to the markdown file. Tilde
     /// (`~`) can be used to refer to the home folder of the current user. It's also possible to
     /// use to use environment variables by prefixing the name with a dollar sign (ex.: `$PATH`).
-    template: String,
+    template: Option<String>,
     /// LaTeX engine to be used. Defaults to xelatex.
     #[serde(default = "default_engine")]
     engine: String,
@@ -130,7 +130,9 @@ pub struct Metadata {
     /// Path to the pandoc template file can be absolute or relative to the markdown file. Tilde
     /// (`~`) can be used to refer to the home folder of the current user. It's also possible to
     /// use to use environment variables by prefixing the name with a dollar sign (ex.: `$PATH`).
-    pub template: PathBuf,
+    /// If no template is set, pandoc will be called without the --template option thus using the
+    /// default template of pandoc.
+    pub template: Option<PathBuf>,
     /// LaTeX engine to be used. Defaults to xelatex.
     pub engine: String,
     /// Set additional parameters to pandoc.
@@ -152,7 +154,10 @@ impl<'a> Metadata {
     pub fn from(path: PathBuf) -> Result<Self, SmoothError<'a>> {
         let header = Header::from(path)?;
         Ok(Self {
-            template: Metadata::normalize_test_template(header.template)?,
+            template: match header.template {
+                Some(x) => Some(Metadata::normalize_test_template(x)?),
+                None => None,
+            },
             engine: header.engine,
             pandoc_options: match header.pandoc_optons {
                 Some(x) => Some(x.split_whitespace().map(|y| String::from(y)).collect()),

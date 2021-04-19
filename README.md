@@ -45,7 +45,7 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Field Name:** `template`
 
-**Description:** Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates).
+**Description:** Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates). If no template is given the default template of pandoc will be used.
 
 **Default:** None.
 

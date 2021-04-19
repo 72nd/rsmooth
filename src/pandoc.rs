@@ -21,7 +21,7 @@ pub struct DebugInfo {
     /// Source file.
     input: String,
     /// Path to the template file.
-    template: String,
+    template: Option<String>,
     /// Output file.
     output: String,
     /// Pandoc stderr.
@@ -43,7 +43,13 @@ impl fmt::Display for DebugInfo {
             false => write!(
                 f,
                 "pandoc failed to convert \"{}\" to \"{}\" with template \"{}\" {}",
-                self.input, self.output, self.template, self.err,
+                self.input,
+                self.output,
+                match self.template {
+                    Some(ref x) => String::from(x),
+                    None => String::from("<undefined>"),
+                },
+                self.err,
             ),
         }
     }
@@ -147,7 +153,7 @@ impl<'a> Pandoc {
             true,
             String::from(input.to_str().unwrap()),
             String::new(),
-            String::new(),
+            None,
         )
     }
 
@@ -161,11 +167,12 @@ impl<'a> Pandoc {
     ) -> Result<(), PandocError<'a>> {
         let mut cmd = Command::new(self.0.clone());
         cmd.arg(&input)
-            .arg("--template")
-            .arg(&metadata.template)
             .arg("--pdf-engine")
             .arg(metadata.engine)
             .arg("--wrap=preserve");
+        if let Some(ref template) = metadata.template {
+            cmd.arg("--template").arg(template);
+        }
         if let Some(options) = metadata.pandoc_options {
             cmd.args(options);
         }
@@ -182,7 +189,10 @@ impl<'a> Pandoc {
             false,
             String::from(input.to_str().unwrap()),
             String::from(output.to_str().unwrap()),
-            String::from(metadata.template.to_str().unwrap()),
+            match metadata.template {
+                Some(x) => Some(String::from(x.to_str().unwrap())),
+                None => None,
+            },
         ) {
             Ok(_) => Ok(()),
             Err(e) => Err(e),
@@ -196,7 +206,7 @@ impl<'a> Pandoc {
         tried_extracting_header: bool,
         input: String,
         output: String,
-        temlate: String,
+        temlate: Option<String>,
     ) -> Result<String, PandocError<'a>> {
         match rsl {
             Ok(x) => {

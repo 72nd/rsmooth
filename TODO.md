@@ -19,6 +19,9 @@
 - [ ] Split description
 	- [ ] Implement as filter
 	- [ ] Documentation done
+- [ ] Release binaries
+	- [ ] Build binaries
+	- [ ] Document installation
 
 
 ## Additional functionality
@@ -27,3 +30,4 @@
 - [ ] Libre Office/Word output
 - [ ] PDF export using Libre Office
 - [ ] Allow more complex template_context values
+

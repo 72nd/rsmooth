@@ -2,7 +2,7 @@
 
 Wrapper around [pandoc](https://pandoc.org) to create PDF's using [LaTeX](https://www.latex-project.org/). The main idea of rsmooth is to define all the needed informations in the [Front Matter](https://jekyllrb.com/docs/front-matter/) (a [YAML](https://en.wikipedia.org/wiki/YAML) header within the markdown document) thus no external configuration is needed.
 
-To allow for even more flexibility it's possible t
+To allow for even more flexibility it's possible to run the content of your input file trough [Terra](https://tera.netlify.app/) (a templating language very similar to [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/)). This allows you to tweak the content of your pandoc input.
 
 
 ## Usage
@@ -54,4 +54,30 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 `engine` Name of the LaTeX engine used to create the PDF document. This internally will set the [--pdf-engine](https://pandoc.org/MANUAL.html#option--pdf-engine) option of pandoc. This option defaults to `xelatex` (as this is what I'm working with).
 
-`pandoc-options` Feed [additional options](https://pandoc.org/MANUAL.html#options) into the pandoc call. Defaults to empty.
+
+### Pandoc Options
+
+**Field Name:** `pandoc-options`
+
+**Description:** Feed [additional options](https://pandoc.org/MANUAL.html#options) into the pandoc call. You can use this the same way as you passing command line options to a pandoc call.
+
+**Default:** None.
+
+
+### Apply input to Tera
+
+**Field Name:** `do_template`
+
+**Description:** States whether the markdown input should be passed trough the [Terra](https://tera.netlify.app/) template engine. This allows you some additional flexibility over your input which cannot be achieved by tweaking the pandoc template file. Especially useful to split the content of your document into multiple markdown files and including them using the `{% include "section_01.md" %}` syntax of Tera. You can pass information to Tera using the [Tera Context](#tera-context) field.
+
+**Default:** `False`.
+
+
+### Tera Context
+
+**Field Name:** `template_context`
+
+**Description:**
+
+**Default:** None.
+

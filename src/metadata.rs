@@ -135,7 +135,7 @@ pub struct Metadata {
     pub engine: String,
     /// Set additional parameters to pandoc.
     pub pandoc_options: Option<Vec<String>>,
-    /// Whether templating should be executed on the input file or not.
+    /// Whether the content of the input file should be feed into the Terra templating engine.
     pub do_template: bool,
     /// Optional template context aka. variables etc.
     pub template_context: Option<HashMap<String, String>>,

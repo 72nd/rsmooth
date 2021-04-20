@@ -42,7 +42,14 @@ pub fn main() {
         )
         .subcommand(
             App::new("example-file")
-                .about("outputs a example markdown file with all available header fields"),
+                .about("outputs a example markdown file with all available header fields")
+                .arg(
+                    Arg::new("output")
+                        .about("optional output file path")
+                        .long("output")
+                        .short('o')
+                        .takes_value(true),
+                ),
         )
         .get_matches();
 
@@ -64,8 +71,14 @@ pub fn main() {
 }
 
 /// Handles example subcommand.
-fn example_cmd(_matches: &ArgMatches) {
-    error!("not implemented yet")
+fn example_cmd(matches: &ArgMatches) {
+    match lib::example(matches.value_of("output")) {
+        Ok(x) => match x {
+            Some(x) => println!("{}", x),
+            None => {}
+        },
+        Err(e) => error!("{}", e),
+    }
 }
 
 /// Handles default command.

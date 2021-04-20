@@ -45,8 +45,7 @@ impl<'a> File {
         // content = ExpandPaths::new(&self.path, vec![ExpandOn::TeraIncludes])?.apply(content)?;
 
         if metadata.do_tera {
-            content =
-                Template::new(&self.path, metadata.clone().tera_context)?.apply(content)?;
+            content = Template::new(&self.path, metadata.clone().tera_context)?.apply(content)?;
         }
 
         content = ExpandPaths::new(&self.path, vec![ExpandOn::EmbeddedLinks])?.apply(content)?;

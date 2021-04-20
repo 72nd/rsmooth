@@ -45,6 +45,10 @@ pub enum SmoothError<'a> {
     TemporaryFile(IOError),
     /// Couldn't read source file.
     ReadSourceFailed(PathBuf, IOError),
+    /// Error occurring while the creation of a file. Should be used when no more specific error is
+    /// necessary. First element contains path to the file, the second element contains the
+    /// std::io::Error with the cause.
+    FileCreateFailed(PathBuf, IOError),
     /// Write file failed.
     WriteFailed(PathBuf, IOError),
 }
@@ -127,6 +131,12 @@ impl fmt::Display for SmoothError<'_> {
                 "couldn't read the content of the given markdown file {} {}",
                 file.display(),
                 err
+            ),
+            SmoothError::FileCreateFailed(file, err) => write!(
+                f,
+                "couldn't create file {} {}",
+                file.display(),
+                err,
             ),
             SmoothError::WriteFailed(file, err) => write!(
                 f,

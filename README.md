@@ -7,6 +7,8 @@ To allow for even more flexibility it's possible to run the content of your inpu
 
 ## Usage
 
+### PDF Export
+
 Take this simple file as a example (`example.md`):
 
 ```markdown
@@ -27,6 +29,17 @@ rsmooth example.md
 ```
 
 This will create `example.pdf`. If you want to specify another name of the PDF use the `-o` flag. The look of the resulting document is defined by the [pandoc template](https://pandoc.org/MANUAL.html#templates) specified by the `template` field in the YAML head. The path to the template file can either be relative or absolute; rsmooth also supports environment variables (like `$HOME`) and tildes as an abbreviation for the home path ([shell expansion](https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_04.html)).
+
+
+### Example File
+
+The application can create an example markdown file showcasing some of the functionality of rsmooth.
+
+```shell script
+rsmooth example-file -o example.md
+```
+
+Saves the content to the `example.md` file.
 
 
 ## Available Options

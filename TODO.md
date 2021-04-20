@@ -17,11 +17,11 @@
 	- [ ] Path to Citation Style file
 	- [ ] Bibliography stuff works
 	- [ ] Documentation done
-- [ ] Example file functionality
-	- [ ] Implement
-	- [ ] Correct location for output path in CLI
+- [x] Example file functionality
+	- [x] Implement (?)
+	- [x] Correct location for output path in CLI (?)
 	- [x] Fix did you mean example command bug in CLI (?)
-	- [ ] Documentation done
+	- [x] Documentation done (?)
 - [ ] Filters
 	- [ ] Implementation done
 	- [ ] Activate as list in header

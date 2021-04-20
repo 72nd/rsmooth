@@ -2,9 +2,13 @@
 
 ## Until 1.0.0 
 
-- [ ] Empty `template` field behavior.
+- [x] Empty `template` field behavior.
+- [ ] Tera Templating
+	- [x] Debug context
+	- [ ] Rename header fields
+	- [ ] Update documentation
 - [ ] Documentation
-	- [ ] Finish `README.md`
+	- [x] Finish `README.md`
 	- [ ] Logo
 - [ ] Bibliography
 	- [ ] Path to Citation Style file
@@ -12,6 +16,7 @@
 	- [ ] Documentation done
 - [ ] Example file functionality
 	- [ ] Implement
+	- [ ] Fix did you mean example command bug in CLI
 	- [ ] Documentation done
 - [ ] Filters
 	- [ ] Implementation done
@@ -30,4 +35,4 @@
 - [ ] Libre Office/Word output
 - [ ] PDF export using Libre Office
 - [ ] Allow more complex template_context values
-
+- [ ] NeoVim Plugin

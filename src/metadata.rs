@@ -10,6 +10,7 @@ use std::path::PathBuf;
 
 use serde::Deserialize;
 use serde_json;
+use serde_json::value::Value;
 
 /// Name of the temporary pandoc template for extracting the header of a markdown file as JSON.
 const JSON_TEMPLATE_PATH: &str = "rsmooth-metadata.pandoc-tpl";
@@ -34,7 +35,7 @@ struct Header {
     #[serde(default = "default_do_tera")]
     do_tera: bool,
     /// Optional template context aka. variables etc.
-    pub tera_context: Option<HashMap<String, String>>,
+    pub tera_context: Option<HashMap<String, Value>>,
     /// Whether newline should break text in description texts. This is especially useful when
     /// using description lists for screen- and stageplays.
     #[serde(default = "default_break_description")]
@@ -127,7 +128,7 @@ pub struct Metadata {
     /// Whether the content of the input file should be feed into the Terra templating engine.
     pub do_tera: bool,
     /// Optional template context aka. variables etc.
-    pub tera_context: Option<HashMap<String, String>>,
+    pub tera_context: Option<HashMap<String, Value>>,
     /// Whether newline should break text in description texts. This is especially useful when
     /// using description lists for screen- and stageplays.
     pub break_description: bool,

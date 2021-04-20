@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::convert::From;
 use std::path::PathBuf;
 
+use serde_json::value::Value;
 use tera::{Context, Error as TeraError, Tera};
 
 /// Contains the errors which can occur while the execution of the template filter
@@ -28,13 +29,13 @@ impl From<TemplateError> for FilterError {
     }
 }
 
-/// The template filter applies the tera template engine on the given string.
+/// The template filter applies the Tera template engine on the given string.
 pub struct Template {
     /// Path to the parent folder where the data originates. This is used to make relative paths
     /// used in the source reachable.
     wd: PathBuf,
     /// Optional context providing the template engine with additional values.
-    context: HashMap<String, String>,
+    context: HashMap<String, Value>,
 }
 
 impl Template {
@@ -42,7 +43,7 @@ impl Template {
     /// context. Returns an instance of the template filter.
     pub fn new(
         input_file: &PathBuf,
-        context: Option<HashMap<String, String>>,
+        context: Option<HashMap<String, Value>>,
     ) -> Result<Self, FilterError> {
         Ok(Self {
             wd: match input_file.parent() {

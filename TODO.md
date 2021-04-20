@@ -3,10 +3,12 @@
 ## Until 1.0.0 
 
 - [x] Empty `template` field behavior. (?)
-- [ ] Tera Templating
+- [x] Tera Templating(?)
 	- [x] Debug context (-)
-	- [ ] Rename header fields
-	- [ ] Update documentation
+	- [x] Rename header fields (?)
+	- [x] Update documentation (?)
+	- [x] Allow more complex template_context values (?)
+	- [x] Update documentation (?)
 - [ ] Documentation
 	- [x] Finish `README.md` (?)
 	- [ ] Logo
@@ -20,6 +22,8 @@
 	- [ ] Documentation done
 - [ ] Filters
 	- [ ] Implementation done
+	- [ ] Activate as list in header
+	- [ ] Template filter activation via list
 	- [ ] Documentation done
 - [ ] Split description
 	- [ ] Implement as filter
@@ -34,6 +38,8 @@
 - [ ] Reveal.js integration
 - [ ] Libre Office/Word output
 - [ ] PDF export using Libre Office
-- [ ] Allow more complex template_context values
 - [ ] NeoVim Plugin
-- [ ] Remove Header/Metadata duplicate
+- [ ] metadata.rs
+	- [ ] Remove Header/Metadata duplicate
+	- [ ] Give Methods meaningful names
+- 

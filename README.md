@@ -68,7 +68,7 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Field Name:** `do_tera`
 
-**Description:** States whether the markdown input should be passed trough the [Terra](https://tera.netlify.app/) template engine. This allows you some additional flexibility over your input which cannot be achieved by tweaking the pandoc template file. Especially useful to split the content of your document into multiple markdown files and including them using the `{% include "section_01.md" %}` syntax of Tera. You can pass information to Tera using the [Tera Context](#tera-context) field.
+**Description:** States whether the markdown input should be passed trough the [Terra](https://tera.netlify.app/) template engine. This allows you some additional flexibility over your input which cannot be achieved by tweaking the pandoc template file. Especially useful to split the content of your document into multiple markdown files and including them using the `{% include "section_01.md" %}` syntax of Tera. You can pass information to Tera using the [Tera Context](#tera-context) field. You can learn more about the syntax of Tera in it's [Documentation](https://tera.netlify.app/docs/#templates).
 
 **Default:** `False`.
 
@@ -77,7 +77,7 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Field Name:** `tera_context`
 
-**Description:** Sometimes it can be useful to pass some additional information to the Tera engine. This can be done by giving this field a map (dict) of strings to strings (learn more about maps [here](https://stackoverflow.com/a/34328811)). Currently only strings are allowed as values in the mapping it is planed to support additional types in upcoming releases.
+**Description:** Sometimes it can be useful to pass some additional information to the Tera engine (context). This can be done by giving this field a map (dict) of strings to any type supported by YAML (learn more about maps in YAML [here](https://stackoverflow.com/a/34328811)).
 
 **Default:** None.
 

@@ -44,9 +44,9 @@ impl<'a> File {
         let mut content = self.read_source()?;
         // content = ExpandPaths::new(&self.path, vec![ExpandOn::TeraIncludes])?.apply(content)?;
 
-        if metadata.do_template {
+        if metadata.do_tera {
             content =
-                Template::new(&self.path, metadata.clone().template_context)?.apply(content)?;
+                Template::new(&self.path, metadata.clone().tera_context)?.apply(content)?;
         }
 
         content = ExpandPaths::new(&self.path, vec![ExpandOn::EmbeddedLinks])?.apply(content)?;

@@ -2,13 +2,13 @@
 
 ## Until 1.0.0 
 
-- [x] Empty `template` field behavior.
+- [x] Empty `template` field behavior. (?)
 - [ ] Tera Templating
-	- [x] Debug context
+	- [x] Debug context (-)
 	- [ ] Rename header fields
 	- [ ] Update documentation
 - [ ] Documentation
-	- [x] Finish `README.md`
+	- [x] Finish `README.md` (?)
 	- [ ] Logo
 - [ ] Bibliography
 	- [ ] Path to Citation Style file
@@ -36,3 +36,4 @@
 - [ ] PDF export using Libre Office
 - [ ] Allow more complex template_context values
 - [ ] NeoVim Plugin
+- [ ] Remove Header/Metadata duplicate

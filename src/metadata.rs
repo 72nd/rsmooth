@@ -8,7 +8,7 @@ use std::fs;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
-use serde::{Deserialize, Deserializer};
+use serde::Deserialize;
 use serde_json;
 
 /// Name of the temporary pandoc template for extracting the header of a markdown file as JSON.
@@ -30,11 +30,11 @@ struct Header {
     /// Set additional parameters to pandoc.
     // #[serde(default = "default_pandoc_options")]
     pandoc_optons: Option<String>,
-    /// Whether templating should be executed on the input file or not.
-    #[serde(default = "default_do_template", deserialize_with = "bool_from_str" )]
-    do_template: bool,
+    /// Whether templating with the Tera engine should be executed on the input file or not.
+    #[serde(default = "default_do_tera")]
+    do_tera: bool,
     /// Optional template context aka. variables etc.
-    pub template_context: Option<HashMap<String, String>>,
+    pub tera_context: Option<HashMap<String, String>>,
     /// Whether newline should break text in description texts. This is especially useful when
     /// using description lists for screen- and stageplays.
     #[serde(default = "default_break_description")]
@@ -49,9 +49,9 @@ fn default_engine() -> String {
     String::from("xelatex")
 }
 
-/// Returns the default value (false) for the do_template field. Used, when the field is not set in
+/// Returns the default value (false) for the do_tera field. Used, when the field is not set in
 /// the metadata.
-fn default_do_template() -> bool {
+fn default_do_tera() -> bool {
     false
 }
 
@@ -59,19 +59,6 @@ fn default_do_template() -> bool {
 /// not set in the metadata.
 fn default_break_description() -> bool {
     false
-}
-
-/// Parses a string as boolean. This is needed as Pandoc converts boolean values in the YAML
-/// Frontmatter header to a string in JSON.
-fn bool_from_str<'de, D>(deserializer: D) -> Result<bool, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let raw: &str = Deserialize::deserialize(deserializer)?;
-    match raw {
-        "true" => Ok(true),
-        _ => Ok(false),
-    }
 }
 
 impl<'a> Header {
@@ -138,9 +125,9 @@ pub struct Metadata {
     /// Set additional parameters to pandoc.
     pub pandoc_options: Option<Vec<String>>,
     /// Whether the content of the input file should be feed into the Terra templating engine.
-    pub do_template: bool,
+    pub do_tera: bool,
     /// Optional template context aka. variables etc.
-    pub template_context: Option<HashMap<String, String>>,
+    pub tera_context: Option<HashMap<String, String>>,
     /// Whether newline should break text in description texts. This is especially useful when
     /// using description lists for screen- and stageplays.
     pub break_description: bool,
@@ -163,8 +150,8 @@ impl<'a> Metadata {
                 Some(x) => Some(x.split_whitespace().map(|y| String::from(y)).collect()),
                 None => None,
             },
-            do_template: header.do_template,
-            template_context: header.template_context,
+            do_tera: header.do_tera,
+            tera_context: header.tera_context,
             break_description: header.break_description,
             bibliography: match header.bibliography {
                 Some(x) => Some(Metadata::normalize_test_bibliography(x)?),

@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate log;
 
-use clap::{App, AppSettings, Arg, ArgMatches};
+use clap::{App, AppSettings, Arg, ArgMatches, ValueHint};
 
 /// Default CLI interface for rsmooth-lib.
 pub fn main() {
@@ -10,6 +10,7 @@ pub fn main() {
         .author("72nd <msg@frg72.com>")
         .about("simple tool chain/wrapper for pandoc.")
         .setting(AppSettings::ArgRequiredElseHelp)
+        .setting(AppSettings::SubcommandsNegateReqs)
         .arg(
             Arg::new("debug")
                 .about("enable debug mode")
@@ -22,7 +23,8 @@ pub fn main() {
                 .about("path to input markdown file")
                 .value_name("INPUT")
                 .required(true)
-                .index(1),
+                .index(1)
+                .value_hint(ValueHint::AnyPath),
         )
         .arg(
             Arg::new("raw")
@@ -39,7 +41,7 @@ pub fn main() {
                 .takes_value(true),
         )
         .subcommand(
-            App::new("example")
+            App::new("example-file")
                 .about("outputs a example markdown file with all available header fields"),
         )
         .get_matches();
@@ -55,7 +57,7 @@ pub fn main() {
         .init();
 
     match matches.subcommand() {
-        Some(("example", x)) => example_cmd(x),
+        Some(("example-file", x)) => example_cmd(x),
         Some((&_, _)) => {}
         None => default_cmd(&matches),
     }

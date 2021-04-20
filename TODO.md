@@ -2,15 +2,16 @@
 
 ## Until 1.0.0 
 
-- [x] Empty `template` field behavior. (?)
-- [x] Tera Templating(?)
+- [x] Empty `template` field behavior. (v.0.2.0)
+- [x] Tera Templating(v.0.2.0)
 	- [x] Debug context (-)
-	- [x] Rename header fields (?)
-	- [x] Update documentation (?)
-	- [x] Allow more complex template_context values (?)
-	- [x] Update documentation (?)
+	- [x] Rename header fields (v.0.2.0)
+	- [x] Update documentation (v.0.2.0)
+	- [x] Allow more complex template_context values (v.0.2.0)
+	- [x] Update documentation (v.0.2.0)
 - [ ] Documentation
-	- [x] Finish `README.md` (?)
+	- [x] Finish `README.md` (v.0.2.0)
+	- [ ] Example header with all options
 	- [ ] Logo
 - [ ] Bibliography
 	- [ ] Path to Citation Style file
@@ -18,7 +19,8 @@
 	- [ ] Documentation done
 - [ ] Example file functionality
 	- [ ] Implement
-	- [ ] Fix did you mean example command bug in CLI
+	- [ ] Correct location for output path in CLI
+	- [x] Fix did you mean example command bug in CLI (?)
 	- [ ] Documentation done
 - [ ] Filters
 	- [ ] Implementation done
@@ -43,3 +45,9 @@
 	- [ ] Remove Header/Metadata duplicate
 	- [ ] Give Methods meaningful names
 - 
+
+
+- An empty or unset `template` field in the YAML header will now correctly fall back to the default Pandoc template.
+- README improved (all header fields documented).
+- Renamed header fields to more meaningful terms (`do_template` to `do_tera` and `template_context` to `tera_context`).
+- Allow any YAML data type as value in the `tera_context` map.

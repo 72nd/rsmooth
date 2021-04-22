@@ -1,5 +1,5 @@
 use crate::error::SmoothError;
-use crate::filters::{ExpandOn, ExpandPaths, Filter, Template};
+use crate::filters::{Filter, Template};
 use crate::metadata::Metadata;
 use crate::pandoc::Pandoc;
 use crate::util;

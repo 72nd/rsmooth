@@ -31,8 +31,7 @@
 	- [-] Documentation done (discarded)
 - [ ] Relative paths in documents
 	- [x] Fix the handling for relative resource links in documents (?)
-	- [ ] Fix the handling for relative resource links in tera
-	- [ ] Remove unused expand_paths filter
+	- [x] Remove unused expand_paths filter (?)
 - [ ] Split description
 	- [ ] Implement as filter
 	- [ ] Documentation done

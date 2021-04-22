@@ -11,7 +11,7 @@
 	- [x] Update documentation (v.0.2.0)
 - [ ] Documentation
 	- [x] Finish `README.md` (v.0.2.0)
-	- [ ] Document available environment variables
+	- [x] Document available environment variables (?)
 	- [ ] Example header with all options
 	- [ ] Logo
 - [ ] Bibliography
@@ -32,7 +32,9 @@
 - [ ] Relative paths in documents
 	- [x] Fix the handling for relative resource links in documents (?)
 	- [x] Remove unused expand_paths filter (?)
-- [ ] Split description
+- [ ] Filters/Split description
+	- [ ] Move template module to tera module in root
+	- [ ] Implement embedded Lua filter structure
 	- [ ] Implement as filter
 	- [ ] Documentation done
 - [ ] Release binaries
@@ -50,7 +52,6 @@
 	- [ ] Remove Header/Metadata duplicate
 	- [ ] Give Methods meaningful names
 - [ ] Load templates from URL's
-- [ ] Filters on pandoc AST.
 
 
 - An empty or unset `template` field in the YAML header will now correctly fall back to the default Pandoc template.

@@ -17,8 +17,8 @@
 - [ ] Bibliography
 	- [x] Fix relative imports in front matter header for bibliography(?)
 	- [x] Fix depreciated citeproc filter (?)
-	- [ ] Path to Citation Style file
-	- [ ] Bibliography stuff works
+	- [x] Path to Citation Style file (?)
+	- [ ] Bibliography stuff works (?)
 	- [ ] Documentation done
 - [x] Example file functionality
 	- [x] Implement (v.0.2.1)

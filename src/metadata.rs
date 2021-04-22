@@ -42,6 +42,8 @@ struct Header {
     break_description: bool,
     /// Path to bibliography file (JSON CTL).
     bibliography: Option<String>,
+    /// Optional path to the Citation Style Language file, altering the citation style.
+    pub csl: Option<String>,
 }
 
 /// Returns the default value (xelatex) for the engine field. Used, when the field is not set in
@@ -134,6 +136,8 @@ pub struct Metadata {
     pub break_description: bool,
     /// Path to bibliography file (JSON CTL).
     pub bibliography: Option<PathBuf>,
+    /// Optional path to the Citation Style Language file, altering the citation style.
+    pub csl: Option<PathBuf>,
 }
 
 impl<'a> Metadata {
@@ -143,7 +147,7 @@ impl<'a> Metadata {
         let header = Header::from(path)?;
         Ok(Self {
             template: match header.template {
-                Some(x) => Some(Metadata::normalize_test_template(x, parent)?),
+                Some(x) => Some(Metadata::normalize_template(x, parent)?),
                 None => None,
             },
             engine: header.engine,
@@ -155,7 +159,11 @@ impl<'a> Metadata {
             tera_context: header.tera_context,
             break_description: header.break_description,
             bibliography: match header.bibliography {
-                Some(x) => Some(Metadata::normalize_test_bibliography(x, parent)?),
+                Some(x) => Some(Metadata::normalize_bibliography(x, parent)?),
+                None => None,
+            },
+            csl: match header.csl {
+                Some(x) => Some(Metadata::normalize_citation_style(x, parent)?),
                 None => None,
             },
         })
@@ -163,7 +171,7 @@ impl<'a> Metadata {
 
     /// Takes the path to the template file and returns a normalized absolute PathBuf. Also tests if
     /// the file exists.
-    fn normalize_test_template(path: String, parent: &PathBuf) -> Result<PathBuf, SmoothError<'a>> {
+    fn normalize_template(path: String, parent: &PathBuf) -> Result<PathBuf, SmoothError<'a>> {
         let rsl = util::normalize_path(&path, Some(parent))?;
         match rsl.exists() {
             true => Ok(rsl),
@@ -173,14 +181,24 @@ impl<'a> Metadata {
 
     /// Takes the path to the bibliography file and returns a normalized absolute PathBuf. Also tests if
     /// the file exists.
-    fn normalize_test_bibliography(
+    fn normalize_bibliography(path: String, parent: &PathBuf) -> Result<PathBuf, SmoothError<'a>> {
+        let rsl = util::normalize_path(&path, Some(parent))?;
+        match rsl.exists() {
+            true => Ok(rsl),
+            false => Err(SmoothError::BibliographyNotFound(rsl)),
+        }
+    }
+
+    /// Takes the path to the citation style file and returns a normalized absolute PathBuf. Also tests if
+    /// the file exists.
+    fn normalize_citation_style(
         path: String,
         parent: &PathBuf,
     ) -> Result<PathBuf, SmoothError<'a>> {
         let rsl = util::normalize_path(&path, Some(parent))?;
         match rsl.exists() {
             true => Ok(rsl),
-            false => Err(SmoothError::BibliographyNotFound(rsl)),
+            false => Err(SmoothError::CitationStyleNotFound(rsl)),
         }
     }
 }

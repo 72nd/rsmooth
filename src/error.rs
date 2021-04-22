@@ -41,6 +41,9 @@ pub enum SmoothError<'a> {
     /// The given bibliography path as specified in the metadata header was not found with the given
     /// path.
     BibliographyNotFound(PathBuf),
+    /// The given citation style file path as specified in the metadata header was not found with the given
+    /// path.
+    CitationStyleNotFound(PathBuf),
     /// Error while creating a temporary file. Contains the error.
     TemporaryFile(IOError),
     /// Couldn't read source file.
@@ -121,6 +124,11 @@ impl fmt::Display for SmoothError<'_> {
             SmoothError::BibliographyNotFound(path) => write!(
                 f,
                 "couldn't find bibliography file under {}",
+                path.display()
+            ),
+            SmoothError::CitationStyleNotFound(path) => write!(
+                f,
+                "couldn't find citation style (csl) file under {}",
                 path.display()
             ),
             SmoothError::TemporaryFile(err) => write!(

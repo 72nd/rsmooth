@@ -15,6 +15,8 @@
 	- [ ] Example header with all options
 	- [ ] Logo
 - [ ] Bibliography
+	- [x] Fix relative imports in front matter header for bibliography(?)
+	- [x] Fix depreciated citeproc filter (?)
 	- [ ] Path to Citation Style file
 	- [ ] Bibliography stuff works
 	- [ ] Documentation done
@@ -40,6 +42,9 @@
 - [ ] Release binaries
 	- [ ] Build binaries
 	- [ ] Document installation
+- [ ] Other
+	- [x] metadata.rs: Give Methods meaningful names (?)
+	- [ ] File ending for temporary file
 
 
 ## Additional functionality
@@ -50,7 +55,6 @@
 - [ ] NeoVim Plugin
 - [ ] metadata.rs
 	- [ ] Remove Header/Metadata duplicate
-	- [ ] Give Methods meaningful names
 - [ ] Load templates from URL's
 
 

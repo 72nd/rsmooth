@@ -181,8 +181,7 @@ impl<'a> Pandoc {
             cmd.args(options);
         }
         if let Some(bibliography) = metadata.bibliography {
-            cmd.arg("--filter")
-                .arg("pandoc-citeproc")
+            cmd.arg("--citeproc")
                 .arg("--bibliography")
                 .arg(bibliography);
         }

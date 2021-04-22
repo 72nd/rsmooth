@@ -11,6 +11,7 @@
 	- [x] Update documentation (v.0.2.0)
 - [ ] Documentation
 	- [x] Finish `README.md` (v.0.2.0)
+	- [ ] Document available environment variables
 	- [ ] Example header with all options
 	- [ ] Logo
 - [ ] Bibliography
@@ -18,15 +19,20 @@
 	- [ ] Bibliography stuff works
 	- [ ] Documentation done
 - [x] Example file functionality
-	- [x] Implement (?)
-	- [x] Correct location for output path in CLI (?)
-	- [x] Fix did you mean example command bug in CLI (?)
-	- [x] Documentation done (?)
-- [ ] Filters
-	- [ ] Implementation done
-	- [ ] Activate as list in header
-	- [ ] Template filter activation via list
-	- [ ] Documentation done
+	- [x] Implement (v.0.2.1)
+	- [x] Correct location for output path in CLI (v.0.2.1)
+	- [x] Fix did you mean example command bug in CLI (v.0.2.1)
+	- [x] Documentation done (v.0.2.1)
+- [-] Filters (discarded)
+	- [-] Implementation done (discarded)
+	- [-] Activate as list in header (discarded)
+	- [-] Template filter activation via list (discarded)
+	- [-] Implement path expansion (discarded)
+	- [-] Documentation done (discarded)
+- [ ] Relative paths in documents
+	- [x] Fix the handling for relative resource links in documents (?)
+	- [ ] Fix the handling for relative resource links in tera
+	- [ ] Remove unused expand_paths filter
 - [ ] Split description
 	- [ ] Implement as filter
 	- [ ] Documentation done
@@ -44,7 +50,8 @@
 - [ ] metadata.rs
 	- [ ] Remove Header/Metadata duplicate
 	- [ ] Give Methods meaningful names
-- 
+- [ ] Load templates from URL's
+- [ ] Filters on pandoc AST.
 
 
 - An empty or unset `template` field in the YAML header will now correctly fall back to the default Pandoc template.

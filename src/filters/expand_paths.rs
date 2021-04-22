@@ -6,6 +6,7 @@ use std::fmt;
 use std::path::PathBuf;
 
 use regex::{Captures, Error as RegexError, Regex};
+use serde::Serialize;
 
 /// Contains the errors which can occur while the execution expand paths filter
 pub enum ExpandPathsError {
@@ -52,11 +53,12 @@ impl From<util::NormalizeError> for ExpandPathsError {
 
 /// Defines the element which should be expanded. This way the filter can be called multiple times
 /// for different use cases.
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub enum ExpandOn {
     /// Expand on Tera include statements.
     TeraIncludes,
     /// Expand embedded links like images.
+    #[serde(rename = "embedded_links")]
     EmbeddedLinks,
 }
 

@@ -48,7 +48,7 @@ impl<'a> File {
             content = Template::new(&self.path, metadata.clone().tera_context)?.apply(content)?;
         }
 
-        content = ExpandPaths::new(&self.path, vec![ExpandOn::EmbeddedLinks])?.apply(content)?;
+        // content = ExpandPaths::new(&self.path, vec![ExpandOn::EmbeddedLinks])?.apply(content)?;
 
         let mut current = File::new_named_tempfile()?;
         match current.write_all(content.as_bytes()) {
@@ -65,7 +65,8 @@ impl<'a> File {
         match Pandoc::new().convert_with_metadata_to_file(
             &prepared_input,
             metadata,
-            self.ouput_path,
+            &self.ouput_path,
+            Some(&self.parent_folder()?),
         ) {
             Ok(_) => Ok(()),
             Err(e) => Err(SmoothError::Pandoc(e)),
@@ -78,6 +79,13 @@ impl<'a> File {
         match fs::read_to_string(self.path.clone()) {
             Ok(x) => Ok(x),
             Err(e) => Err(SmoothError::ReadSourceFailed(self.path.clone(), e)),
+        }
+    }
+
+    fn parent_folder(&self) -> Result<PathBuf, SmoothError<'a>> {
+        match self.path.parent() {
+            Some(x) => Ok(x.to_path_buf()),
+            None => Err(SmoothError::NoParentFolder(self.path.to_path_buf()).into()),
         }
     }
 

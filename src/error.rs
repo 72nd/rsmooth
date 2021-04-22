@@ -51,6 +51,8 @@ pub enum SmoothError<'a> {
     FileCreateFailed(PathBuf, IOError),
     /// Write file failed.
     WriteFailed(PathBuf, IOError),
+    /// Parent element of given path couldn't be determined.
+    NoParentFolder(PathBuf),
 }
 
 impl From<FilterError> for SmoothError<'_> {
@@ -144,6 +146,11 @@ impl fmt::Display for SmoothError<'_> {
                 file.display(),
                 err,
             ),
+            SmoothError::NoParentFolder(file) => write!(
+                f,
+                "no parent folder for path {} found",
+                file.display(),
+            )
         }
     }
 }

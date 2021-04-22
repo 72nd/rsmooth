@@ -39,7 +39,7 @@ The application can create an example markdown file showcasing some of the funct
 rsmooth example-file -o example.md
 ```
 
-Saves the content to the `example.md` file.
+Saves the content to the `example.md` file. Calling without the `-o` flag will output the example file to the STDOUT.
 
 
 ## Available Options

@@ -133,7 +133,7 @@ impl<'a> Pandoc {
     /// mainly used for the extraction of the frontmatter header as a JSON file.
     pub fn convert_with_template_to_str(
         &self,
-        input: PathBuf,
+        input: &PathBuf,
         template: PathBuf,
     ) -> Result<String, PandocError<'a>> {
         check_path(input.clone(), "input")?;

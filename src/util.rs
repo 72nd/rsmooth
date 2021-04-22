@@ -38,7 +38,7 @@ impl Error for NormalizeError {}
 /// the value from the system will be used.
 pub fn normalize_path<'a, S: Into<String>>(
     path: S,
-    wd: Option<PathBuf>,
+    wd: Option<&PathBuf>,
 ) -> Result<PathBuf, NormalizeError> {
     let p = path.into();
     let expanded = match shellexpand::full(&p) {

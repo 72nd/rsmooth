@@ -64,7 +64,7 @@ fn default_break_description() -> bool {
 
 impl<'a> Header {
     /// Tries to read the YAML header of a given input file to a Metadata struct using pandoc.
-    fn from(file: PathBuf) -> Result<Self, SmoothError<'a>> {
+    fn from(file: &PathBuf) -> Result<Self, SmoothError<'a>> {
         let json_tpl = Header::create_template()?;
         let raw = match Pandoc::new().convert_with_template_to_str(file, json_tpl.clone()) {
             Ok(x) => x,
@@ -139,11 +139,11 @@ pub struct Metadata {
 impl<'a> Metadata {
     /// Tries to read the YAML header of a given input file to a Metadata struct using pandoc. The
     /// function will test the paths.
-    pub fn from(path: PathBuf) -> Result<Self, SmoothError<'a>> {
+    pub fn from(path: &PathBuf, parent: &PathBuf) -> Result<Self, SmoothError<'a>> {
         let header = Header::from(path)?;
         Ok(Self {
             template: match header.template {
-                Some(x) => Some(Metadata::normalize_test_template(x)?),
+                Some(x) => Some(Metadata::normalize_test_template(x, parent)?),
                 None => None,
             },
             engine: header.engine,
@@ -155,7 +155,7 @@ impl<'a> Metadata {
             tera_context: header.tera_context,
             break_description: header.break_description,
             bibliography: match header.bibliography {
-                Some(x) => Some(Metadata::normalize_test_bibliography(x)?),
+                Some(x) => Some(Metadata::normalize_test_bibliography(x, parent)?),
                 None => None,
             },
         })
@@ -163,18 +163,21 @@ impl<'a> Metadata {
 
     /// Takes the path to the template file and returns a normalized absolute PathBuf. Also tests if
     /// the file exists.
-    fn normalize_test_template(path: String) -> Result<PathBuf, SmoothError<'a>> {
-        let rsl = util::normalize_path(&path, None)?;
+    fn normalize_test_template(path: String, parent: &PathBuf) -> Result<PathBuf, SmoothError<'a>> {
+        let rsl = util::normalize_path(&path, Some(parent))?;
         match rsl.exists() {
             true => Ok(rsl),
             false => Err(SmoothError::TemplateNotFound(rsl)),
         }
     }
 
-    /// Takes the path to the default_bibliography file and returns a normalized absolute PathBuf. Also tests if
+    /// Takes the path to the bibliography file and returns a normalized absolute PathBuf. Also tests if
     /// the file exists.
-    fn normalize_test_bibliography(path: String) -> Result<PathBuf, SmoothError<'a>> {
-        let rsl = util::normalize_path(&path, None)?;
+    fn normalize_test_bibliography(
+        path: String,
+        parent: &PathBuf,
+    ) -> Result<PathBuf, SmoothError<'a>> {
+        let rsl = util::normalize_path(&path, Some(parent))?;
         match rsl.exists() {
             true => Ok(rsl),
             false => Err(SmoothError::BibliographyNotFound(rsl)),

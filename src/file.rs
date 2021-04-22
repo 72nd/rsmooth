@@ -39,7 +39,7 @@ impl<'a> File {
     /// Converts the loaded markdown file. The keep_temp parameter states whether the temporary
     /// pandoc input file should be kept for debugging purposes.
     pub fn convert(self, output_raw: bool) -> Result<(), SmoothError<'a>> {
-        let metadata = Metadata::from(self.path.clone())?;
+        let metadata = Metadata::from(&self.path, &self.parent_folder()?)?;
 
         let mut content = self.read_source()?;
         // content = ExpandPaths::new(&self.path, vec![ExpandOn::TeraIncludes])?.apply(content)?;

@@ -94,3 +94,7 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Default:** None.
 
+
+## Environment Variables
+
+rsmooth assumes the pandoc executable is callable with the `pandoc` command. You can use the environment variable `PANDOC_CMD` to alter this.

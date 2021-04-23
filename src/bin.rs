@@ -1,6 +1,11 @@
 #[macro_use]
 extern crate log;
 
+/// Format argument for a PDF output.
+const PDF_FORMAT: &str = "pdf";
+/// Format argument for a ODT (OpenDocument Text) output.
+const ODT_FORMAT: &str = "odt";
+
 use clap::{App, AppSettings, Arg, ArgMatches, ValueHint};
 
 /// Default CLI interface for rsmooth-lib.
@@ -17,6 +22,16 @@ pub fn main() {
                 .long("debug")
                 .short('d')
                 .global(true),
+        )
+        .arg(
+            Arg::new("format")
+                .about("set the output format")
+                .long("format")
+                .short('f')
+                .takes_value(true)
+                .possible_value(PDF_FORMAT)
+                .possible_value(ODT_FORMAT)
+                .default_value(PDF_FORMAT)
         )
         .arg(
             Arg::new("INPUT")
@@ -87,6 +102,11 @@ fn default_cmd(matches: &ArgMatches) {
         matches.value_of("INPUT").unwrap(),
         matches.value_of("output"),
         matches.is_present("raw"),
+        match matches.value_of("format").unwrap() {
+            PDF_FORMAT => lib::OutputFormat::Pdf,
+            ODT_FORMAT => lib::OutputFormat::Odt,
+            _ => lib::OutputFormat::Pdf,
+        },
     ) {
         Ok(_) => {}
         Err(e) => error!("{}", e),

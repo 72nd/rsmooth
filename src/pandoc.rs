@@ -180,10 +180,8 @@ impl<'a> Pandoc {
         if let Some(options) = metadata.pandoc_options {
             cmd.args(options);
         }
-        if let Some(bibliography) = metadata.bibliography {
-            cmd.arg("--citeproc")
-                .arg("--bibliography")
-                .arg(bibliography);
+        if let Some(_bibliography) = metadata.bibliography {
+            cmd.arg("--citeproc");
         }
         if let Some(path) = resource_path {
             cmd.arg("--resource-path").arg(path);

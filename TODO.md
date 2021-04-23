@@ -31,7 +31,7 @@
 	- [-] Template filter activation via list (discarded)
 	- [-] Implement path expansion (discarded)
 	- [-] Documentation done (discarded)
-- [ ] Relative paths in documents
+- [x] Relative paths in documents
 	- [x] Fix the handling for relative resource links in documents (?)
 	- [x] Remove unused expand_paths filter (?)
 - [ ] Filters/Split description
@@ -56,9 +56,21 @@
 - [ ] metadata.rs
 	- [ ] Remove Header/Metadata duplicate
 - [ ] Load templates from URL's
+- [ ] Wordcount
 
+Lot of improvements and fixes:
 
-- An empty or unset `template` field in the YAML header will now correctly fall back to the default Pandoc template.
-- README improved (all header fields documented).
-- Renamed header fields to more meaningful terms (`do_template` to `do_tera` and `template_context` to `tera_context`).
-- Allow any YAML data type as value in the `tera_context` map.
+- Bibliography
+	- Resolve relative paths to citation style files.
+	- Switched to the current citeproc filter.
+- Relative Paths in input documents
+	- Fix the relative linking of files within the document by setting pandoc's `--ressource-path` to the correct folder.
+	- Fix the relative linking of bibliography files in the frontmatter header.
+- Documentation (README):
+	- Available environment variables documented.
+	- Bibliography.
+- Internal
+	- Tidy up metadata.rs (method names).
+	- Unused `expand_paths`filter removed.
+	- Tera functionality lives now as module in the source root.
+	- Unused `filters` module removed.

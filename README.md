@@ -74,7 +74,7 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 ### Pandoc Options
 
-**Field Name:** `pandoc-options`
+**Field Name:** `pandoc_options`
 
 **Description:** Feed [additional options](https://pandoc.org/MANUAL.html#options) into the pandoc call. You can use this the same way as you passing command line options to a pandoc call.
 

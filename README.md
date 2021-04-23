@@ -51,7 +51,7 @@ Note: The whole content of the YAML header will be also available to pandoc and 
 
 ### A word on paths
 
-Rsmooth tries to resolve a variety of paths used in the configuration header. As they will get [shell expanded](https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_04.html) you can use environment variables and tildes (`~`) for your home directory. Relative paths will be handled **relative to the input file's location**.
+Rsmooth tries to resolve a variety of paths used in the configuration header. As they will get [shell expanded](https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_04.html) you can use environment variables and tildes (`~`) for your home directory. Relative paths will be handled **relative to the input file's location**. Note: Only fields documented below support this path resolving mechanism.
 
 
 ### Template
@@ -93,6 +93,24 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 **Description:** Sometimes it can be useful to pass some additional information to the Tera engine (context). This can be done by giving this field a map (dict) of strings to any type supported by YAML (learn more about maps in YAML [here](https://stackoverflow.com/a/34328811)).
 
 **Default:** None.
+
+
+### Bibliography File
+
+**Field Name:** `bibliography`
+
+**Description:** Path to the file containing the bibliographic metadata used for citation within your document. [Pandoc supports](https://pandoc.org/MANUAL.html#specifying-bibliographic-data) BibLaTeX, BibTeX, CSL JSON and CSL YAML files. Learn more on how to use this functionality in the [pandoc documentation](https://pandoc.org/MANUAL.html#citation-syntax). Note: In order to use the citation functionality of pandoc `pandoc-citeproc` has to be installed on your system.
+
+**Default:** None.
+
+
+### Citation Style
+
+**Field Name:** `csl`
+
+**Description:** Path to the [Citation Style File](https://citationstyles.org/) describing the style of citations within the document.
+
+**Default:** None (pandoc will use the Chicago Manual of Style author-date format).
 
 
 ## Environment Variables

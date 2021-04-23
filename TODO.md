@@ -14,12 +14,12 @@
 	- [x] Document available environment variables (?)
 	- [ ] Example header with all options
 	- [ ] Logo
-- [ ] Bibliography
+- [x] Bibliography
 	- [x] Fix relative imports in front matter header for bibliography(?)
 	- [x] Fix depreciated citeproc filter (?)
 	- [x] Path to Citation Style file (?)
-	- [ ] Bibliography stuff works (?)
-	- [ ] Documentation done
+	- [x] Bibliography stuff works (?)
+	- [x] Documentation done (?)
 - [x] Example file functionality
 	- [x] Implement (v.0.2.1)
 	- [x] Correct location for output path in CLI (v.0.2.1)

@@ -11,15 +11,15 @@
 	- [x] Update documentation (v.0.2.0)
 - [ ] Documentation
 	- [x] Finish `README.md` (v.0.2.0)
-	- [x] Document available environment variables (?)
+	- [x] Document available environment variables (v.0.2.1)
 	- [ ] Example header with all options
 	- [ ] Logo
 - [x] Bibliography
-	- [x] Fix relative imports in front matter header for bibliography(?)
-	- [x] Fix depreciated citeproc filter (?)
-	- [x] Path to Citation Style file (?)
-	- [x] Bibliography stuff works (?)
-	- [x] Documentation done (?)
+	- [x] Fix relative imports in front matter header for bibliography(v.0.2.1)
+	- [x] Fix depreciated citeproc filter (v.0.2.1)
+	- [x] Path to Citation Style file (v.0.2.1)
+	- [x] Bibliography stuff works (v.0.2.1)
+	- [x] Documentation done (v.0.2.1)
 - [x] Example file functionality
 	- [x] Implement (v.0.2.1)
 	- [x] Correct location for output path in CLI (v.0.2.1)
@@ -32,10 +32,10 @@
 	- [-] Implement path expansion (discarded)
 	- [-] Documentation done (discarded)
 - [x] Relative paths in documents
-	- [x] Fix the handling for relative resource links in documents (?)
-	- [x] Remove unused expand_paths filter (?)
+	- [x] Fix the handling for relative resource links in documents (v.0.2.1)
+	- [x] Remove unused expand_paths filter (v.0.2.1)
 - [ ] Filters/Split description
-	- [x] Move template module to tera module in root (?)
+	- [x] Move template module to tera module in root (v.0.2.1)
 	- [ ] Implement embedded Lua filter structure
 	- [ ] Implement as filter
 	- [ ] Documentation done
@@ -43,7 +43,7 @@
 	- [ ] Build binaries
 	- [ ] Document installation
 - [ ] Other
-	- [x] metadata.rs: Give Methods meaningful names (?)
+	- [x] metadata.rs: Give Methods meaningful names (v.0.2.1)
 	- [-] File ending for temporary file (discarded)
 
 
@@ -58,19 +58,4 @@
 - [ ] Load templates from URL's
 - [ ] Wordcount
 
-Lot of improvements and fixes:
 
-- Bibliography
-	- Resolve relative paths to citation style files.
-	- Switched to the current citeproc filter.
-- Relative Paths in input documents
-	- Fix the relative linking of files within the document by setting pandoc's `--ressource-path` to the correct folder.
-	- Fix the relative linking of bibliography files in the frontmatter header.
-- Documentation (README):
-	- Available environment variables documented.
-	- Bibliography.
-- Internal
-	- Tidy up metadata.rs (method names).
-	- Unused `expand_paths`filter removed.
-	- Tera functionality lives now as module in the source root.
-	- Unused `filters` module removed.

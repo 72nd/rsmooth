@@ -65,7 +65,11 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 ### PDF Engine
 
-`engine` Name of the LaTeX engine used to create the PDF document. This internally will set the [--pdf-engine](https://pandoc.org/MANUAL.html#option--pdf-engine) option of pandoc. This option defaults to `xelatex` (as this is what I'm working with).
+**Field Name:** `engine`
+
+**Description:** Name of the LaTeX engine used to create the PDF document. This internally will set the [--pdf-engine](https://pandoc.org/MANUAL.html#option--pdf-engine) option of pandoc.
+
+**Default:** `xelatex` (as this is what I'm working with).
 
 
 ### Pandoc Options

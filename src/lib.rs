@@ -4,9 +4,9 @@ extern crate log;
 mod error;
 mod example;
 mod file;
-mod filters;
 mod metadata;
 mod pandoc;
+mod tera;
 mod util;
 
 use example::Example;

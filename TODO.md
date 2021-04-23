@@ -35,7 +35,7 @@
 	- [x] Fix the handling for relative resource links in documents (?)
 	- [x] Remove unused expand_paths filter (?)
 - [ ] Filters/Split description
-	- [ ] Move template module to tera module in root
+	- [x] Move template module to tera module in root (?)
 	- [ ] Implement embedded Lua filter structure
 	- [ ] Implement as filter
 	- [ ] Documentation done
@@ -44,7 +44,7 @@
 	- [ ] Document installation
 - [ ] Other
 	- [x] metadata.rs: Give Methods meaningful names (?)
-	- [ ] File ending for temporary file
+	- [-] File ending for temporary file (discarded)
 
 
 ## Additional functionality

@@ -1,8 +1,8 @@
 use crate::error::SmoothError;
-use crate::filters::{Filter, Template};
 use crate::metadata::Metadata;
 use crate::pandoc::Pandoc;
 use crate::util;
+use crate::tera::Template;
 
 use std::fs;
 use std::io::Write;

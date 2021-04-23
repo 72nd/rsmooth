@@ -1,33 +1,10 @@
-use super::{Filter, FilterError};
+use crate::error::SmoothError;
 
 use std::collections::HashMap;
-use std::convert::From;
 use std::path::PathBuf;
 
 use serde_json::value::Value;
-use tera::{Context, Error as TeraError, Tera};
-
-/// Contains the errors which can occur while the execution of the template filter
-pub enum TemplateError {
-    /// Parent element of source file path couldn't be determined.
-    NoParentFolder(PathBuf),
-    /// Some tera error.
-    Tera(TeraError),
-}
-
-impl From<TemplateError> for FilterError {
-    fn from(item: TemplateError) -> FilterError {
-        FilterError {
-            name: String::from("template"),
-            description: match item {
-                TemplateError::NoParentFolder(path) => {
-                    format!("no parent folder for path {} found", path.display())
-                }
-                TemplateError::Tera(err) => format!("tera engine error {}", err),
-            },
-        }
-    }
-}
+use tera::{Context, Tera};
 
 /// The template filter applies the Tera template engine on the given string.
 pub struct Template {
@@ -38,17 +15,17 @@ pub struct Template {
     context: HashMap<String, Value>,
 }
 
-impl Template {
+impl<'a> Template {
     /// Takes the path of the input markdown file and an optional hash map for the template
     /// context. Returns an instance of the template filter.
     pub fn new(
         input_file: &PathBuf,
         context: Option<HashMap<String, Value>>,
-    ) -> Result<Self, FilterError> {
+    ) -> Result<Self, SmoothError<'a>> {
         Ok(Self {
             wd: match input_file.parent() {
                 Some(x) => x.to_path_buf(),
-                None => return Err(TemplateError::NoParentFolder(input_file.to_path_buf()).into()),
+                None => return Err(SmoothError::NoParentFolder(input_file.to_path_buf()).into()),
             },
             context: match context {
                 Some(x) => x,
@@ -56,23 +33,21 @@ impl Template {
             },
         })
     }
-}
 
-impl Filter for Template {
-    fn apply(self, data: String) -> Result<String, FilterError> {
+    pub fn apply(self, data: String) -> Result<String, SmoothError<'a>> {
         let mut pth = self.wd;
         pth.push("**/*.md");
         let mut tpl = match Tera::new(pth.as_os_str().to_str().unwrap()) {
             Ok(x) => x,
-            Err(e) => return Err(TemplateError::Tera(e).into()),
+            Err(e) => return Err(SmoothError::Tera(e)),
         };
         let ctx = match Context::from_serialize(self.context) {
             Ok(x) => x,
-            Err(e) => return Err(TemplateError::Tera(e).into()),
+            Err(e) => return Err(SmoothError::Tera(e)),
         };
         match tpl.render_str(&data, &ctx) {
             Ok(x) => Ok(x),
-            Err(e) => Err(TemplateError::Tera(e).into()),
+            Err(e) => Err(SmoothError::Tera(e)),
         }
     }
 }

@@ -1,4 +1,3 @@
-use crate::filters::FilterError;
 use crate::pandoc::PandocError;
 use crate::util::NormalizeError;
 
@@ -9,6 +8,7 @@ use std::io::Error as IOError;
 use std::path::PathBuf;
 
 use serde_json::error::Error as JsonError;
+use tera::Error as TeraError;
 
 /// The error type for errors which can occur while running rsmooth.
 pub enum SmoothError<'a> {
@@ -17,8 +17,6 @@ pub enum SmoothError<'a> {
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
     /// handling of pandoc (-errors) see the pandoc module.
     Pandoc(PandocError<'a>),
-    /// Error occurring while applying the filters.
-    Filter(FilterError),
     /// The input file was not found under the given path.
     InputFileNotFound(&'a str, PathBuf),
     /// Couldn't read the Frontmatter YAML Header of the input file. String resembles the path to
@@ -56,13 +54,10 @@ pub enum SmoothError<'a> {
     WriteFailed(PathBuf, IOError),
     /// Parent element of given path couldn't be determined.
     NoParentFolder(PathBuf),
+    /// Some tera error.
+    Tera(TeraError),
 }
 
-impl From<FilterError> for SmoothError<'_> {
-    fn from(item: FilterError) -> Self {
-        Self::Filter(item)
-    }
-}
 
 impl From<NormalizeError> for SmoothError<'_> {
     fn from(item: NormalizeError) -> Self {
@@ -75,7 +70,6 @@ impl fmt::Display for SmoothError<'_> {
         match self {
             SmoothError::NormalizeError(err) => write!(f, "path normalize error {}", err),
             SmoothError::Pandoc(err) => write!(f, "{}", err),
-            SmoothError::Filter(err) => write!(f, "{} filter error: {}", err.name, err.description),
             SmoothError::InputFileNotFound(given, normalized) => match given == &normalized.as_os_str() {
                 true => write!(
                     f,
@@ -158,7 +152,12 @@ impl fmt::Display for SmoothError<'_> {
                 f,
                 "no parent folder for path {} found",
                 file.display(),
-            )
+            ),
+            SmoothError::Tera(error) => write!(
+                f,
+                "error in Tera templating engine {}",
+                error,
+            ),
         }
     }
 }

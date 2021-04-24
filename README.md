@@ -60,6 +60,8 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Description:** Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates). If no template is given the default template of pandoc will be used.
 
+**Type:** String (path).
+
 **Default:** None.
 
 
@@ -69,6 +71,8 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Description:** Name of the LaTeX engine used to create the PDF document. This internally will set the [--pdf-engine](https://pandoc.org/MANUAL.html#option--pdf-engine) option of pandoc.
 
+**Type:** String.
+
 **Default:** `xelatex` (as this is what I'm working with).
 
 
@@ -76,7 +80,9 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Field Name:** `pandoc_options`
 
-**Description:** Feed [additional options](https://pandoc.org/MANUAL.html#options) into the pandoc call. You can use this the same way as you passing command line options to a pandoc call.
+**Description:** Feed [additional options](https://pandoc.org/MANUAL.html#options) into the pandoc call. Multiple arguments are expressed as a list of strings.
+
+**Type:** String / List of Strings.
 
 **Default:** None.
 
@@ -87,6 +93,8 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Description:** States whether the markdown input should be passed trough the [Terra](https://tera.netlify.app/) template engine. This allows you some additional flexibility over your input which cannot be achieved by tweaking the pandoc template file. Especially useful to split the content of your document into multiple markdown files and including them using the `{% include "section_01.md" %}` syntax of Tera. You can pass information to Tera using the [Tera Context](#tera-context) field. You can learn more about the syntax of Tera in it's [Documentation](https://tera.netlify.app/docs/#templates).
 
+**Type:** Boolean (`true`/`false`).
+
 **Default:** `False`.
 
 
@@ -95,6 +103,8 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 **Field Name:** `tera_context`
 
 **Description:** Sometimes it can be useful to pass some additional information to the Tera engine (context). This can be done by giving this field a map (dict) of strings to any type supported by YAML (learn more about maps in YAML [here](https://stackoverflow.com/a/34328811)).
+
+**Type:** Map String to Any.
 
 **Default:** None.
 
@@ -105,6 +115,8 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Description:** Path to the file containing the bibliographic metadata used for citation within your document. [Pandoc supports](https://pandoc.org/MANUAL.html#specifying-bibliographic-data) BibLaTeX, BibTeX, CSL JSON and CSL YAML files. Learn more on how to use this functionality in the [pandoc documentation](https://pandoc.org/MANUAL.html#citation-syntax). Note: In order to use the citation functionality of pandoc `pandoc-citeproc` has to be installed on your system.
 
+**Type:** String (path).
+
 **Default:** None.
 
 
@@ -113,6 +125,8 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 **Field Name:** `csl`
 
 **Description:** Path to the [Citation Style File](https://citationstyles.org/) describing the style of citations within the document.
+
+**Type:** String (path).
 
 **Default:** None (pandoc will use the Chicago Manual of Style author-date format).
 

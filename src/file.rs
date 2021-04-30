@@ -1,4 +1,5 @@
 use crate::error::SmoothError;
+use crate::libreoffice::LibreOffice;
 use crate::metadata::Metadata;
 use crate::pandoc::Pandoc;
 use crate::tera::Template;
@@ -16,7 +17,7 @@ pub struct File {
     /// Absolute path to the markdown source file.
     path: PathBuf,
     /// Destination path for the output file.
-    ouput_path: PathBuf,
+    output_path: PathBuf,
     /// Desired format of the output file.
     output_format: OutputFormat,
 }
@@ -36,7 +37,7 @@ impl<'a> File {
         }
         Ok(Self {
             path: norm_in_path.clone(),
-            ouput_path: match output_path {
+            output_path: match output_path {
                 Some(x) => util::normalize_path(x.into(), None)?,
                 None => File::out_path_from_input(norm_in_path, &output_format),
             },
@@ -50,7 +51,6 @@ impl<'a> File {
         let metadata = Metadata::from(&self.path, &self.parent_folder()?, &self.output_format)?;
 
         let mut content = self.read_source()?;
-        // content = ExpandPaths::new(&self.path, vec![ExpandOn::TeraIncludes])?.apply(content)?;
 
         if metadata.do_tera {
             content = Template::new(&self.path, metadata.clone().tera_context)?.apply(content)?;
@@ -71,21 +71,32 @@ impl<'a> File {
             OutputFormat::Pdf => Pandoc::new().convert_with_metadata_to_pdf(
                 &prepared_input,
                 metadata,
-                &self.ouput_path,
+                &self.output_path,
                 Some(&self.parent_folder()?),
             ),
-            OutputFormat::Odt | OutputFormat::Docx => Pandoc::new().convert_with_metadata_to_office(
-                &prepared_input,
-                metadata,
-                &self.ouput_path,
-                Some(&self.parent_folder()?),
-            ),
+            OutputFormat::Odt | OutputFormat::Docx | OutputFormat::OdtPdf => Pandoc::new()
+                .convert_with_metadata_to_office(
+                    &prepared_input,
+                    metadata,
+                    &self.output_path,
+                    Some(&self.parent_folder()?),
+                ),
         };
 
         match result {
-            Ok(_) => Ok(()),
-            Err(e) => Err(SmoothError::Pandoc(e)),
+            Ok(_) => (),
+            Err(e) => return Err(SmoothError::Pandoc(e)),
         }
+
+        if let OutputFormat::OdtPdf = self.output_format {
+            let office = LibreOffice::new();
+            match office.convert_to_pdf(&self.output_path) {
+                Ok(_) => (),
+                Err(e) => return Err(SmoothError::LibreOffice(e)),
+            }
+        }
+
+        Ok(())
     }
 
     /// Reads the input file and returns the content as a string. This is used to apply all
@@ -110,7 +121,7 @@ impl<'a> File {
     fn out_path_from_input(input: PathBuf, format: &OutputFormat) -> PathBuf {
         match format {
             OutputFormat::Pdf => input.with_extension("pdf"),
-            OutputFormat::Odt => input.with_extension("odt"),
+            OutputFormat::Odt | OutputFormat::OdtPdf => input.with_extension("odt"),
             OutputFormat::Docx => input.with_extension("docx"),
         }
     }

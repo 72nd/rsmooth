@@ -4,6 +4,7 @@ extern crate log;
 mod error;
 mod example;
 mod file;
+mod libreoffice;
 mod metadata;
 mod pandoc;
 mod tera;
@@ -20,7 +21,9 @@ pub enum OutputFormat {
     /// OpenDocument Text format.
     Odt,
     /// Office Open XML Document format.
-    Docx
+    Docx,
+    /// OpenDocument Text format and accompanying PDF file.
+    OdtPdf,
 }
 
 /// Converts a given markdown file and saves the result to the same path with the same file name.

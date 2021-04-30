@@ -7,6 +7,8 @@ const PDF_FORMAT: &str = "pdf";
 const ODT_FORMAT: &str = "odt";
 /// Format argument for a DOCX (Office Open XML Document) output.
 const DOCX_FORMAT: &str = "docx";
+/// Format argument for a ODT (OpenDocument Text) and PDF output.
+const ODTPDF_FORMAT: &str = "odtpdf";
 
 use clap::{App, AppSettings, Arg, ArgMatches, ValueHint};
 
@@ -34,6 +36,7 @@ pub fn main() {
                 .possible_value(PDF_FORMAT)
                 .possible_value(ODT_FORMAT)
                 .possible_value(DOCX_FORMAT)
+                .possible_value(ODTPDF_FORMAT)
                 .default_value(PDF_FORMAT)
         )
         .arg(
@@ -109,6 +112,7 @@ fn default_cmd(matches: &ArgMatches) {
             PDF_FORMAT => lib::OutputFormat::Pdf,
             ODT_FORMAT => lib::OutputFormat::Odt,
             DOCX_FORMAT => lib::OutputFormat::Docx,
+            ODTPDF_FORMAT => lib::OutputFormat::OdtPdf,
             _ => lib::OutputFormat::Pdf,
         },
     ) {

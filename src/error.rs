@@ -1,4 +1,5 @@
 use crate::pandoc::PandocError;
+use crate::libreoffice::LibreOfficeError;
 use crate::util::NormalizeError;
 
 use std::convert::From;
@@ -17,6 +18,8 @@ pub enum SmoothError<'a> {
     /// Error occurring while calling pandoc contains an PandocError. For more information on the
     /// handling of pandoc (-errors) see the pandoc module.
     Pandoc(PandocError<'a>),
+    /// Error occurring while calling LibreOffice.
+    LibreOffice(LibreOfficeError),
     /// The input file was not found under the given path.
     InputFileNotFound(&'a str, PathBuf),
     /// Couldn't read the Frontmatter YAML Header of the input file. String resembles the path to
@@ -77,6 +80,7 @@ impl fmt::Display for SmoothError<'_> {
         match self {
             SmoothError::NormalizeError(err) => write!(f, "path normalize error {}", err),
             SmoothError::Pandoc(err) => write!(f, "{}", err),
+            SmoothError::LibreOffice(err) => write!(f, "{}", err),
             SmoothError::InputFileNotFound(given, normalized) => match given == &normalized.as_os_str() {
                 true => write!(
                     f,

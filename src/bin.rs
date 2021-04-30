@@ -5,6 +5,8 @@ extern crate log;
 const PDF_FORMAT: &str = "pdf";
 /// Format argument for a ODT (OpenDocument Text) output.
 const ODT_FORMAT: &str = "odt";
+/// Format argument for a DOCX (Office Open XML Document) output.
+const DOCX_FORMAT: &str = "docx";
 
 use clap::{App, AppSettings, Arg, ArgMatches, ValueHint};
 
@@ -31,6 +33,7 @@ pub fn main() {
                 .takes_value(true)
                 .possible_value(PDF_FORMAT)
                 .possible_value(ODT_FORMAT)
+                .possible_value(DOCX_FORMAT)
                 .default_value(PDF_FORMAT)
         )
         .arg(
@@ -105,6 +108,7 @@ fn default_cmd(matches: &ArgMatches) {
         match matches.value_of("format").unwrap() {
             PDF_FORMAT => lib::OutputFormat::Pdf,
             ODT_FORMAT => lib::OutputFormat::Odt,
+            DOCX_FORMAT => lib::OutputFormat::Docx,
             _ => lib::OutputFormat::Pdf,
         },
     ) {

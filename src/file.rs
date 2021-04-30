@@ -38,7 +38,7 @@ impl<'a> File {
             path: norm_in_path.clone(),
             ouput_path: match output_path {
                 Some(x) => util::normalize_path(x.into(), None)?,
-                None => File::out_path_from_input(norm_in_path),
+                None => File::out_path_from_input(norm_in_path, &output_format),
             },
             output_format: output_format,
         })
@@ -74,7 +74,7 @@ impl<'a> File {
                 &self.ouput_path,
                 Some(&self.parent_folder()?),
             ),
-            OutputFormat::Odt => Pandoc::new().convert_with_metadata_to_odt(
+            OutputFormat::Odt | OutputFormat::Docx => Pandoc::new().convert_with_metadata_to_office(
                 &prepared_input,
                 metadata,
                 &self.ouput_path,
@@ -107,8 +107,12 @@ impl<'a> File {
     /// Takes the input path of a markdown document and returns the same path with the .pdf
     /// extension. Used when no output path is specified. This function will be useful when rsmooth
     /// also allows the export to other files than PDFs.
-    fn out_path_from_input(input: PathBuf) -> PathBuf {
-        input.with_extension("pdf")
+    fn out_path_from_input(input: PathBuf, format: &OutputFormat) -> PathBuf {
+        match format {
+            OutputFormat::Pdf => input.with_extension("pdf"),
+            OutputFormat::Odt => input.with_extension("odt"),
+            OutputFormat::Docx => input.with_extension("docx"),
+        }
     }
 
     /// Encapsulates the instantiating of a new NamedTempFile and returns the appropriate smooth

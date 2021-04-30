@@ -203,12 +203,12 @@ impl<'a> Pandoc {
         }
     }
 
-    /// Converts a given file with a template to a OpenDocument text file. Optionally it's
-    /// possible to add parameters to the pandoc call. The resource_path parameter can
+    /// Converts a given file with a template to a OpenDocument text or word file. Optionally
+    /// it's possible to add parameters to the pandoc call. The resource_path parameter can
     /// optionally state the folder path to which the links within the document (images etc.)
     /// are relative to. This way the conversion can happen in the temporary folder while
     /// correctly referencing the relative embedded links in the markdown document.
-    pub fn convert_with_metadata_to_odt(
+    pub fn convert_with_metadata_to_office(
         &self,
         input: &PathBuf,
         metadata: Metadata,

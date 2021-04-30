@@ -19,6 +19,8 @@ pub enum OutputFormat {
     Pdf,
     /// OpenDocument Text format.
     Odt,
+    /// Office Open XML Document format.
+    Docx
 }
 
 /// Converts a given markdown file and saves the result to the same path with the same file name.

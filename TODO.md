@@ -54,13 +54,12 @@
 - [ ] Libre Office/Word output
 	- [x] odt Export
 	- [x] odt Reference file
-	- [x] odt Template file
+	- [ ] odt Template file
 	- [x] docx Export
 	- [x] docx Reference file
-	- [ ] error when wrong reference file type
+	- [x] error when wrong reference file type
 	- [ ] error when docx gets template
 	- [ ] pdf export via OpenOffice
-	- [ ] odt and pdf export
 - [ ] PDF export using Libre Office
 - [ ] NeoVim Plugin
 - [ ] metadata.rs

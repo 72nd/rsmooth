@@ -1,6 +1,7 @@
 use crate::error::SmoothError;
 use crate::pandoc::Pandoc;
 use crate::util;
+use crate::OutputFormat;
 
 use std::collections::HashMap;
 use std::env;
@@ -160,15 +161,29 @@ pub struct Metadata {
 impl<'a> Metadata {
     /// Tries to read the YAML header of a given input file to a Metadata struct using pandoc. The
     /// function will test the paths.
-    pub fn from(path: &PathBuf, parent: &PathBuf) -> Result<Self, SmoothError<'a>> {
+    pub fn from(
+        path: &PathBuf,
+        parent: &PathBuf,
+        output_format: &OutputFormat,
+    ) -> Result<Self, SmoothError<'a>> {
         let header = Header::from(path)?;
         Ok(Self {
             template: match header.template {
-                Some(x) => Some(Metadata::normalize_path(x, parent, PathType::Template)?),
+                Some(x) => Some(Metadata::normalize_path(
+                    x,
+                    parent,
+                    PathType::Template,
+                    output_format,
+                )?),
                 None => None,
             },
             reference: match header.reference {
-                Some(x) => Some(Metadata::normalize_path(x, parent, PathType::Reference)?),
+                Some(x) => Some(Metadata::normalize_path(
+                    x,
+                    parent,
+                    PathType::Reference,
+                    output_format,
+                )?),
                 None => None,
             },
             engine: header.engine,
@@ -180,7 +195,12 @@ impl<'a> Metadata {
             tera_context: header.tera_context,
             break_description: header.break_description,
             bibliography: match header.bibliography {
-                Some(x) => Some(Metadata::normalize_path(x, parent, PathType::Bibliography)?),
+                Some(x) => Some(Metadata::normalize_path(
+                    x,
+                    parent,
+                    PathType::Bibliography,
+                    output_format,
+                )?),
                 None => None,
             },
             csl: match header.csl {
@@ -188,6 +208,7 @@ impl<'a> Metadata {
                     x,
                     parent,
                     PathType::CitationStyle,
+                    output_format,
                 )?),
                 None => None,
             },
@@ -195,13 +216,29 @@ impl<'a> Metadata {
     }
 
     /// Takes the path to a file and returns a normalized absolute PathBuf. Also tests if
-    /// the file exists.
+    /// the file exists. If the path points to a reference the correct file type for the given
+    /// output format is also checked.
     fn normalize_path(
         path: String,
         parent: &PathBuf,
         typ: PathType,
+        output_format: &OutputFormat,
     ) -> Result<PathBuf, SmoothError<'a>> {
         let rsl = util::normalize_path(&path, Some(parent))?;
+        if let PathType::Reference = typ {
+            let extension = rsl.extension().unwrap().to_str().unwrap();
+            match output_format {
+                OutputFormat::Odt => match extension {
+                    "odt" | "fodt" => {}
+                    _ => return Err(SmoothError::IncompatibleReferenceFile(rsl, "odt")),
+                },
+                OutputFormat::Docx => match extension {
+                    "docx" | "docm" => {}
+                    _ => return Err(SmoothError::IncompatibleReferenceFile(rsl, "docx")),
+                },
+                _ => {},
+            };
+        }
         match rsl.exists() {
             true => Ok(rsl),
             false => match typ {

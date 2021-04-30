@@ -59,6 +59,10 @@ pub enum SmoothError<'a> {
     NoParentFolder(PathBuf),
     /// Some tera error.
     Tera(TeraError),
+    /// Given reference file isn't compatible with the requested output format. E.g. using a Odt
+    /// reference file for a docx export. First parameter contains the path to the faulty reference
+    /// file the second describes the output format.
+    IncompatibleReferenceFile(PathBuf, &'a str),
 }
 
 
@@ -165,6 +169,12 @@ impl fmt::Display for SmoothError<'_> {
                 f,
                 "error in Tera templating engine {}",
                 error,
+            ),
+            SmoothError::IncompatibleReferenceFile(file, format) => write!(
+                f,
+                "reference file {} isn't compatible to output format {}",
+                file.display(),
+                format
             ),
         }
     }

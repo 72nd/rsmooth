@@ -50,10 +50,14 @@
 ## Additional functionality
 
 - [ ] Reveal.js integration
+- [ ] Get default documents
 - [ ] Libre Office/Word output
 	- [x] odt Export
+	- [x] odt Reference file
 	- [ ] odt Template file
 	- [ ] docx Export
+	- [ ] docx Reference file
+	- [ ] error when docx gets template
 	- [ ] pdf export via OpenOffice
 	- [ ] odt and pdf export
 - [ ] PDF export using Libre Office

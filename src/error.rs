@@ -36,6 +36,9 @@ pub enum SmoothError<'a> {
     /// The given template path as specified in the metadata header was not found with the given
     /// path.
     TemplateNotFound(PathBuf),
+    /// The given reference path as specified in the metadata header was not found with the given
+    /// path.
+    ReferenceNotFound(PathBuf),
     /// The given bibliography path as specified in the metadata header was not found with the given
     /// path.
     BibliographyNotFound(PathBuf),
@@ -113,6 +116,11 @@ impl fmt::Display for SmoothError<'_> {
             SmoothError::TemplateNotFound(path) => write!(
                 f,
                 "couldn't find template file under {}",
+                path.display()
+            ),
+            SmoothError::ReferenceNotFound(path) => write!(
+                f,
+                "couldn't find reference file under {}",
                 path.display()
             ),
             SmoothError::BibliographyNotFound(path) => write!(

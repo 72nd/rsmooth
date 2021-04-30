@@ -65,6 +65,17 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 **Default:** None.
 
 
+### Reference File
+
+**Field Name:** `reference`
+
+**Description:** Path to a ODT or docx file as a style reference. Learn more in the [specific writer options](https://pandoc.org/MANUAL.html#options-affecting-specific-writers) on the `--reference-doc` option and it's usage.
+
+**Type:** String (path).
+
+**Default:** None.
+
+
 ### PDF Engine
 
 **Field Name:** `engine`

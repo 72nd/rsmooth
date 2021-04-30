@@ -217,6 +217,9 @@ impl<'a> Pandoc {
     ) -> Result<(), PandocError<'a>> {
         let mut cmd = Command::new(self.0.clone());
         cmd.arg(&input);
+        if let Some(ref reference) = metadata.reference {
+            cmd.arg("--reference-doc").arg(reference);
+        }
         if let Some(options) = metadata.pandoc_options {
             cmd.args(options);
         }

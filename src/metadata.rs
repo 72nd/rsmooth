@@ -25,6 +25,8 @@ struct Header {
     /// (`~`) can be used to refer to the home folder of the current user. It's also possible to
     /// use to use environment variables by prefixing the name with a dollar sign (ex.: `$PATH`).
     template: Option<String>,
+    /// Path to the reference file used for docx and odt exports. Path expansion as usual.
+    reference: Option<String>,
     /// LaTeX engine to be used. Defaults to xelatex.
     #[serde(default = "default_engine")]
     engine: String,
@@ -115,6 +117,19 @@ impl<'a> Header {
     }
 }
 
+/// States the file type a path points to. This is used to normalize paths and returning the
+/// appropriate error message.
+enum PathType {
+    /// Path to a template file.
+    Template,
+    /// Path to a reference file.
+    Reference,
+    /// Path to bibliography file.
+    Bibliography,
+    /// Path to citation style file.
+    CitationStyle,
+}
+
 #[derive(Debug, Clone)]
 pub struct Metadata {
     /// Path to the pandoc template file can be absolute or relative to the markdown file. Tilde
@@ -123,6 +138,8 @@ pub struct Metadata {
     /// If no template is set, pandoc will be called without the --template option thus using the
     /// default template of pandoc.
     pub template: Option<PathBuf>,
+    /// Path to the reference file used for docx and odt exports. Path expansion as usual.
+    pub reference: Option<PathBuf>,
     /// LaTeX engine to be used. Defaults to xelatex.
     pub engine: String,
     /// Set additional parameters to pandoc.
@@ -147,7 +164,11 @@ impl<'a> Metadata {
         let header = Header::from(path)?;
         Ok(Self {
             template: match header.template {
-                Some(x) => Some(Metadata::normalize_template(x, parent)?),
+                Some(x) => Some(Metadata::normalize_path(x, parent, PathType::Template)?),
+                None => None,
+            },
+            reference: match header.reference {
+                Some(x) => Some(Metadata::normalize_path(x, parent, PathType::Reference)?),
                 None => None,
             },
             engine: header.engine,
@@ -159,46 +180,36 @@ impl<'a> Metadata {
             tera_context: header.tera_context,
             break_description: header.break_description,
             bibliography: match header.bibliography {
-                Some(x) => Some(Metadata::normalize_bibliography(x, parent)?),
+                Some(x) => Some(Metadata::normalize_path(x, parent, PathType::Bibliography)?),
                 None => None,
             },
             csl: match header.csl {
-                Some(x) => Some(Metadata::normalize_citation_style(x, parent)?),
+                Some(x) => Some(Metadata::normalize_path(
+                    x,
+                    parent,
+                    PathType::CitationStyle,
+                )?),
                 None => None,
             },
         })
     }
 
-    /// Takes the path to the template file and returns a normalized absolute PathBuf. Also tests if
+    /// Takes the path to a file and returns a normalized absolute PathBuf. Also tests if
     /// the file exists.
-    fn normalize_template(path: String, parent: &PathBuf) -> Result<PathBuf, SmoothError<'a>> {
-        let rsl = util::normalize_path(&path, Some(parent))?;
-        match rsl.exists() {
-            true => Ok(rsl),
-            false => Err(SmoothError::TemplateNotFound(rsl)),
-        }
-    }
-
-    /// Takes the path to the bibliography file and returns a normalized absolute PathBuf. Also tests if
-    /// the file exists.
-    fn normalize_bibliography(path: String, parent: &PathBuf) -> Result<PathBuf, SmoothError<'a>> {
-        let rsl = util::normalize_path(&path, Some(parent))?;
-        match rsl.exists() {
-            true => Ok(rsl),
-            false => Err(SmoothError::BibliographyNotFound(rsl)),
-        }
-    }
-
-    /// Takes the path to the citation style file and returns a normalized absolute PathBuf. Also tests if
-    /// the file exists.
-    fn normalize_citation_style(
+    fn normalize_path(
         path: String,
         parent: &PathBuf,
+        typ: PathType,
     ) -> Result<PathBuf, SmoothError<'a>> {
         let rsl = util::normalize_path(&path, Some(parent))?;
         match rsl.exists() {
             true => Ok(rsl),
-            false => Err(SmoothError::CitationStyleNotFound(rsl)),
+            false => match typ {
+                PathType::Template => Err(SmoothError::TemplateNotFound(rsl)),
+                PathType::Reference => Err(SmoothError::ReferenceNotFound(rsl)),
+                PathType::Bibliography => Err(SmoothError::BibliographyNotFound(rsl)),
+                PathType::CitationStyle => Err(SmoothError::CitationStyleNotFound(rsl)),
+            },
         }
     }
 }

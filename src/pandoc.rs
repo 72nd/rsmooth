@@ -157,12 +157,12 @@ impl<'a> Pandoc {
         )
     }
 
-    /// Converts a given file with a template to a output file. Optionally it's possible to add
+    /// Converts a given file with a template to a PDF. Optionally it's possible to add
     /// parameters to the pandoc call. The resource_path parameter can optionally state the folder
     /// path to which the links within the document (images etc.) are relative to. This way the
     /// conversion can happen in the temporary folder while correctly referencing the relative
     /// embedded links in the markdown document.
-    pub fn convert_with_metadata_to_file(
+    pub fn convert_with_metadata_to_pdf(
         &self,
         input: &PathBuf,
         metadata: Metadata,
@@ -197,6 +197,43 @@ impl<'a> Pandoc {
                 Some(x) => Some(String::from(x.to_str().unwrap())),
                 None => None,
             },
+        ) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(e),
+        }
+    }
+
+    /// Converts a given file with a template to a OpenDocument text file. Optionally it's
+    /// possible to add parameters to the pandoc call. The resource_path parameter can
+    /// optionally state the folder path to which the links within the document (images etc.)
+    /// are relative to. This way the conversion can happen in the temporary folder while
+    /// correctly referencing the relative embedded links in the markdown document.
+    pub fn convert_with_metadata_to_odt(
+        &self,
+        input: &PathBuf,
+        metadata: Metadata,
+        output: &PathBuf,
+        resource_path: Option<&PathBuf>,
+    ) -> Result<(), PandocError<'a>> {
+        let mut cmd = Command::new(self.0.clone());
+        cmd.arg(&input);
+        if let Some(options) = metadata.pandoc_options {
+            cmd.args(options);
+        }
+        if let Some(_bibliography) = metadata.bibliography {
+            cmd.arg("--citeproc");
+        }
+        if let Some(path) = resource_path {
+            cmd.arg("--resource-path").arg(path);
+        }
+        cmd.arg("-o").arg(&output);
+        match Pandoc::output_to_result(
+            cmd.output(),
+            self.0.clone(),
+            false,
+            String::from(input.to_str().unwrap()),
+            String::from(output.to_str().unwrap()),
+            None,
         ) {
             Ok(_) => Ok(()),
             Err(e) => Err(e),

@@ -51,6 +51,11 @@
 
 - [ ] Reveal.js integration
 - [ ] Libre Office/Word output
+	- [x] odt Export
+	- [ ] odt Template file
+	- [ ] docx Export
+	- [ ] pdf export via OpenOffice
+	- [ ] odt and pdf export
 - [ ] PDF export using Libre Office
 - [ ] NeoVim Plugin
 - [ ] metadata.rs

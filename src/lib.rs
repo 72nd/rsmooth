@@ -30,7 +30,7 @@ pub fn convert<'a>(
     keep_temp: bool,
     format: OutputFormat,
 ) -> Result<(), error::SmoothError<'a>> {
-    let f = File::new(path, output)?;
+    let f = File::new(path, output, format)?;
     f.convert(keep_temp)?;
     Ok(())
 }

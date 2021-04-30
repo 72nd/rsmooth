@@ -1,8 +1,9 @@
 use crate::error::SmoothError;
 use crate::metadata::Metadata;
 use crate::pandoc::Pandoc;
-use crate::util;
 use crate::tera::Template;
+use crate::util;
+use crate::OutputFormat;
 
 use std::fs;
 use std::io::Write;
@@ -16,12 +17,18 @@ pub struct File {
     path: PathBuf,
     /// Destination path for the output file.
     ouput_path: PathBuf,
+    /// Desired format of the output file.
+    output_format: OutputFormat,
 }
 
 impl<'a> File {
     /// Returns a new instance of the file object for a given path. The output folder can be
     /// defined, otherwise the same folder and file name as the input file will be used.
-    pub fn new<S: Into<&'a str>>(path: S, output_path: Option<S>) -> Result<Self, SmoothError<'a>> {
+    pub fn new<S: Into<&'a str>>(
+        path: S,
+        output_path: Option<S>,
+        output_format: OutputFormat,
+    ) -> Result<Self, SmoothError<'a>> {
         let in_path = path.into();
         let norm_in_path = util::normalize_path(in_path, None)?;
         if !norm_in_path.exists() {
@@ -33,6 +40,7 @@ impl<'a> File {
                 Some(x) => util::normalize_path(x.into(), None)?,
                 None => File::out_path_from_input(norm_in_path),
             },
+            output_format: output_format,
         })
     }
 
@@ -48,8 +56,6 @@ impl<'a> File {
             content = Template::new(&self.path, metadata.clone().tera_context)?.apply(content)?;
         }
 
-        // content = ExpandPaths::new(&self.path, vec![ExpandOn::EmbeddedLinks])?.apply(content)?;
-
         let mut current = File::new_named_tempfile()?;
         match current.write_all(content.as_bytes()) {
             Ok(_) => {}
@@ -57,17 +63,26 @@ impl<'a> File {
         };
         let prepared_input = current.path().to_path_buf();
 
-        // TODO: Do Verse break
         if output_raw {
             println!("{}", content)
         }
 
-        match Pandoc::new().convert_with_metadata_to_file(
-            &prepared_input,
-            metadata,
-            &self.ouput_path,
-            Some(&self.parent_folder()?),
-        ) {
+        let result = match self.output_format {
+            OutputFormat::Pdf => Pandoc::new().convert_with_metadata_to_pdf(
+                &prepared_input,
+                metadata,
+                &self.ouput_path,
+                Some(&self.parent_folder()?),
+            ),
+            OutputFormat::Odt => Pandoc::new().convert_with_metadata_to_odt(
+                &prepared_input,
+                metadata,
+                &self.ouput_path,
+                Some(&self.parent_folder()?),
+            ),
+        };
+
+        match result {
             Ok(_) => Ok(()),
             Err(e) => Err(SmoothError::Pandoc(e)),
         }

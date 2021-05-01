@@ -37,11 +37,11 @@ This will create `example.pdf`. If you want to specify another name of the PDF u
 
 As stated above rsmooth also supports the creation of odt, docx documents and reveal.js slide shows. This can be tweaked by setting the `--format` (or `-f`) flag to one of the following values:
 
-- `--format pdf` Outputs a PDF. You can alter the engine used by setting the [engine](#pdf-engine) in the document header (hint: this currently defaults to `xelatex`).
-- `--format odt` Outputs the document as a [OpenDocument Text](https://en.wikipedia.org/wiki/OpenDocument) (commonly known as odt) office document. You can alter the appearance of the document by setting the [reference](#reference-file) in the document header. (Note: Currently the [template](#template) field is ignored when exporting to odt).
-- `--format docx` Saves the document as a [Office Open XML Document](https://en.wikipedia.org/wiki/Office_Open_XML) (aka a docx). You can alter the appearance of the document by setting the [reference](#reference-file) in the document header.
-- `--format odtpdf` Will first export your document as a odt file and then using your LibreOffice installation converting this into a PDF. As with the other office-document based work flows you can use the [reference](#reference-file) field to alter the appearance of the result.
-- `--format reveal` Using [reveal.js](https://revealjs.com/) rsmooth can export your document as a slide show. Don't forget to specify the path to the reveal.js assets with the `revealjs-url` field in your document header. 
+- **PDF** `--format pdf` Outputs a PDF. You can alter the engine used by setting the [engine](#pdf-engine) in the document header (hint: this currently defaults to `xelatex`).
+- **ODT** `--format odt` Outputs the document as a [OpenDocument Text](https://en.wikipedia.org/wiki/OpenDocument) (commonly known as odt) office document. You can alter the appearance of the document by setting the [reference](#reference-file) in the document header. (Note: Currently the [template](#template) field is ignored when exporting to odt).
+- **DOCX** `--format docx` Saves the document as a [Office Open XML Document](https://en.wikipedia.org/wiki/Office_Open_XML) (aka a docx). You can alter the appearance of the document by setting the [reference](#reference-file) in the document header.
+- **ODT & PDF** `--format odtpdf` Will first export your document as a odt file and then using your LibreOffice installation converting this into a PDF. As with the other office-document based work flows you can use the [reference](#reference-file) field to alter the appearance of the result.
+- **Reveal.js** `--format reveal` Using [reveal.js](https://revealjs.com/) rsmooth can export your document as a slide show. Don't forget to specify the path to the reveal.js assets with the `revealjs-url` field in your document header. 
 
 
 ### Example file

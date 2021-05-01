@@ -69,13 +69,13 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 ### Template
 
-**Field Name:** `template`
+_Field Name:_ `template`
 
-**Description:** Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates). If no template is given the default template of pandoc will be used. The template field currently gets ignored when exporting documents as odt or docx.
+*Description:* Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates). If no template is given the default template of pandoc will be used. The template field currently gets ignored when exporting documents as odt or docx.
 
-**Type:** String (path).
+*Type:* String (path).
 
-**Default:** None.
+*Default:* None.
 
 
 ### Reference File

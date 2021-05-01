@@ -1,11 +1,13 @@
 # rsmooth
 
-Wrapper around [pandoc](https://pandoc.org) to create PDF's using [LaTeX](https://www.latex-project.org/). The main idea of rsmooth is to define all the needed informations in the [Front Matter](https://jekyllrb.com/docs/front-matter/) (a [YAML](https://en.wikipedia.org/wiki/YAML) header within the markdown document) thus no external configuration is needed.
+Wrapper around [pandoc](https://pandoc.org) to create PDF's, office documents and slide show using.latex-project.org/). The main idea of rsmooth is to define all the needed informations in the [Front Matter](https://jekyllrb.com/docs/front-matter/) (a [YAML](https://en.wikipedia.org/wiki/YAML) header within the markdown document) thus no external configuration is needed.
 
-To allow for even more flexibility it's possible to run the content of your input file trough [Terra](https://tera.netlify.app/) (a templating language very similar to [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/)). This allows you to tweak the content of your pandoc input.
+To allow for even more flexibility it's possible to run the content of your input file trough [Terra](https://tera.netlify.app/) (a templating language very similar to [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/)). This allows you to tweak the content of your pandoc input. Currently rmsooth can convert markdown files into PDF's, OpenDocument Text (`.odt`), Office Open XML Document (`.docx`) and slide shows using [Reveal.js](https://revealjs.com/). Beside using pandocs default mechanism of creating PDF's, it's also possible to use [LibreOffice](https://www.libreoffice.org/).
 
 
 ## Usage
+
+This section will outline the most used work flows and options. Calling rsmooth with the `--help` flag will show all available functions.
 
 ### PDF Export
 
@@ -31,7 +33,18 @@ rsmooth example.md
 This will create `example.pdf`. If you want to specify another name of the PDF use the `-o` flag. The look of the resulting document is defined by the [pandoc template](https://pandoc.org/MANUAL.html#templates) specified by the `template` field in the YAML head. The path to the template file can either be relative or absolute; rsmooth also supports environment variables (like `$HOME`) and tildes as an abbreviation for the home path ([shell expansion](https://tldp.org/LDP/Bash-Beginners-Guide/html/sect_03_04.html)).
 
 
-### Example File
+### Export to other formats
+
+As stated above rsmooth also supports the creation of odt, docx documents and reveal.js slide shows. This can be tweaked by setting the `--format` (or `-f`) flag to one of the following values:
+
+- `--format pdf` Outputs a PDF. You can alter the engine used by setting the [engine](#pdf-engine) in the document header (hint: this currently defaults to `xelatex`).
+- `--format odt` Outputs the document as a [OpenDocument Text](https://en.wikipedia.org/wiki/OpenDocument) (commonly known as odt) office document. You can alter the appearance of the document by setting the [reference](#reference-file) in the document header. (Note: Currently the [template](#template) field is ignored when exporting to odt).
+- `--format docx` Saves the document as a [Office Open XML Document](https://en.wikipedia.org/wiki/Office_Open_XML) (aka a docx). You can alter the appearance of the document by setting the [reference](#reference-file) in the document header.
+- `--format odtpdf` Will first export your document as a odt file and then using your LibreOffice installation converting this into a PDF. As with the other office-document based work flows you can use the [reference](#reference-file) field to alter the appearance of the result.
+- `--format reveal` Using [reveal.js](https://revealjs.com/) rsmooth can export your document as a slide show. Don't forget to specify the path to the reveal.js assets with the `revealjs-url` field in your document header. 
+
+
+### Example file
 
 The application can create an example markdown file showcasing some of the functionality of rsmooth.
 
@@ -42,7 +55,7 @@ rsmooth example-file -o example.md
 Saves the content to the `example.md` file. Calling without the `-o` flag will output the example file to the STDOUT.
 
 
-## Available Options
+## Available document options
 
 By using the YAML header (front matter) you can alter the behavior of rsmooth and use additional features.
 
@@ -58,7 +71,7 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 
 **Field Name:** `template`
 
-**Description:** Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates). If no template is given the default template of pandoc will be used.
+**Description:** Path to the template file. Learn more about these files in the [pandoc documentation](https://pandoc.org/MANUAL.html#templates). If no template is given the default template of pandoc will be used. The template field currently gets ignored when exporting documents as odt or docx.
 
 **Type:** String (path).
 
@@ -145,3 +158,5 @@ Rsmooth tries to resolve a variety of paths used in the configuration header. As
 ## Environment Variables
 
 rsmooth assumes the pandoc executable is callable with the `pandoc` command. You can use the environment variable `PANDOC_CMD` to alter this.
+
+The location of LibreOffice defaults to `soffice` and can be changed using the `LIBREOFFICE_CMD` environment variable.

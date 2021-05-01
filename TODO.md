@@ -67,5 +67,6 @@
 	- [ ] Remove Header/Metadata duplicate
 - [ ] Load templates from URL's
 - [ ] Wordcount
+- [ ] Download the revealjs dependencies
 
 

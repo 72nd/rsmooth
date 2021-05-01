@@ -59,7 +59,8 @@
 	- [x] docx Reference file
 	- [x] error when wrong reference file type
 	- [ ] error when docx gets template
-	- [ ] pdf export via OpenOffice
+	- [x] pdf export via OpenOffice
+- [ ] Document output formats
 - [ ] PDF export using Libre Office
 - [ ] NeoVim Plugin
 - [ ] metadata.rs

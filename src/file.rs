@@ -81,6 +81,12 @@ impl<'a> File {
                     &self.output_path,
                     Some(&self.parent_folder()?),
                 ),
+            OutputFormat::Reveal => Pandoc::new().convert_with_metadata_to_reveal(
+                &prepared_input,
+                metadata,
+                &self.output_path,
+                Some(&self.parent_folder()?),
+            ),
         };
 
         match result {
@@ -123,6 +129,7 @@ impl<'a> File {
             OutputFormat::Pdf => input.with_extension("pdf"),
             OutputFormat::Odt | OutputFormat::OdtPdf => input.with_extension("odt"),
             OutputFormat::Docx => input.with_extension("docx"),
+            OutputFormat::Reveal => input.with_extension("html"),
         }
     }
 

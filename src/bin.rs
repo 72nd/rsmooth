@@ -9,6 +9,8 @@ const ODT_FORMAT: &str = "odt";
 const DOCX_FORMAT: &str = "docx";
 /// Format argument for a ODT (OpenDocument Text) and PDF output.
 const ODTPDF_FORMAT: &str = "odtpdf";
+/// Format argument for a Reveal.js output.
+const REVEAL_FORMAT: &str = "reveal";
 
 use clap::{App, AppSettings, Arg, ArgMatches, ValueHint};
 
@@ -37,6 +39,7 @@ pub fn main() {
                 .possible_value(ODT_FORMAT)
                 .possible_value(DOCX_FORMAT)
                 .possible_value(ODTPDF_FORMAT)
+                .possible_value(REVEAL_FORMAT)
                 .default_value(PDF_FORMAT)
         )
         .arg(
@@ -113,6 +116,7 @@ fn default_cmd(matches: &ArgMatches) {
             ODT_FORMAT => lib::OutputFormat::Odt,
             DOCX_FORMAT => lib::OutputFormat::Docx,
             ODTPDF_FORMAT => lib::OutputFormat::OdtPdf,
+            REVEAL_FORMAT => lib::OutputFormat::Reveal,
             _ => lib::OutputFormat::Pdf,
         },
     ) {

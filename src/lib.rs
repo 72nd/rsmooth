@@ -24,6 +24,8 @@ pub enum OutputFormat {
     Docx,
     /// OpenDocument Text format and accompanying PDF file.
     OdtPdf,
+    /// Reveal.js output.
+    Reveal,
 }
 
 /// Converts a given markdown file and saves the result to the same path with the same file name.

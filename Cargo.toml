@@ -1,8 +1,15 @@
 [package]
-name = "rsmooth-lib"
-version = "0.1.0"
+name = "rsmooth"
+version = "0.3.0"
 authors = ["72nd <msg@frg72.com>"]
 edition = "2018"
+license = "MIT"
+description = "Opinionated wrapper for pandoc using YAML headers for configuration"
+readme = "README.md"
+homepage = "https://github.com/72nd/rsmooth"
+repository = "https://github.com/72nd/rsmooth"
+keywords = ["cli", "pandoc", "pdf", "markdown"]
+categories = ["command-line-utilities"]
 
 [lib]
 name = "lib"

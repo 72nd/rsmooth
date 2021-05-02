@@ -87,12 +87,12 @@ sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam
 sed ornare ipsum, in condimentum velit.
 ```
 
-Calling `rsmooth main.md` will output the following pdf:
+Calling `rsmooth main.md` will produce the following pdf:
 
 ![](misc/tera.png)
 
 <p align="center">
-  <img width="140" src="misc/tera.png">
+  <img width="100" src="misc/tera.png">
 </p>
 
 ### Example file

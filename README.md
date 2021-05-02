@@ -90,7 +90,7 @@ sed ornare ipsum, in condimentum velit.
 Calling `rsmooth main.md` will produce the following pdf:
 
 <p align="center">
-  <img width="400" src="misc/tera.png">
+  <img width="550" src="misc/tera.png">
 </p>
 
 ### Example file

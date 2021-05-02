@@ -44,6 +44,51 @@ As stated above rsmooth also supports the creation of odt, docx documents and re
 - **Reveal.js** `--format reveal` Using [reveal.js](https://revealjs.com/) rsmooth can export your document as a slide show. Don't forget to specify the path to the reveal.js assets with the `revealjs-url` field in your document header. 
 
 
+### Apply the Tera template engine on input files
+
+[Pandoc's template capabilities](https://pandoc.org/MANUAL.html#templates) gives you a lot of flexibility to control the output. But sometimes there is the need to have more control about the input side of things. This is why rsmooth allows you to alter the markdown input using the [Terra](https://tera.netlify.app/) template engine. You can enable Tera by setting the [do_tera](#apply-input-to-tera) and [tera_context](#tera-context) passing additional data (pleas read the documentation of the respective fields to learn more). You can learn more about the usage of Tera in [their documentation](https://tera.netlify.app/docs/#templates). Short example:
+
+`main.md` 
+
+```jinja
+---
+title: Tera Example
+do_tera: True
+tera_context: 
+	foo: Fnord
+	shopping:
+		- name: Eggs
+		  amount: 6
+		- name: Bread
+		  amount: 2
+		- name: Milk
+		  amount: 1
+---
+
+# Notes
+
+The content of the context variable `foo` is »{{ foo }}«. My shopping List:
+
+{% for item in shopping %}
+- {{ item.amount}}x {{ item.name }}
+{% endfor %}
+
+{% include "section.md" %}
+``` 
+
+`section.md`
+
+```markdown
+# A Section
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a commodo urna. Aliquam elementum molestie tempor. Suspendisse potenti. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam sed ornare ipsum, in condimentum velit. Sed iaculis risus at mauris mattis, rhoncus elementum dui venenatis. In ullamcorper auctor sapien non venenatis. Nunc cursus feugiat consequat. Curabitur iaculis eros a nulla efficitur facilisis. In volutpat condimentum ante a accumsan. Curabitur non nunc eu tellus dapibus pulvinar. Nullam convallis erat sit amet orci commodo, eu tempus sapien tempor. Mauris blandit enim nec nisl congue lobortis. Pellentesque nibh enim, molestie quis lorem id, accumsan dignissim eros. 
+```
+
+Calling `rsmooth main.md` will output the following pdf:
+
+![](misc/tera.png)
+
+
 ### Example file
 
 The application can create an example markdown file showcasing some of the functionality of rsmooth.

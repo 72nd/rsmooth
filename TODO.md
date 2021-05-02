@@ -1,7 +1,5 @@
 # TODO's
 
-## Until 1.0.0 
-
 - [x] Empty `template` field behavior. (v.0.2.0)
 - [x] Tera Templating(v.0.2.0)
 	- [x] Debug context (-)
@@ -14,6 +12,9 @@
 	- [x] Document available environment variables (v.0.2.1)
 	- [ ] Example header with all options
 	- [ ] Logo
+	- [ ] Document installation
+	- [ ] Document Library
+	- [ ] Link to API
 - [x] Bibliography
 	- [x] Fix relative imports in front matter header for bibliography(v.0.2.1)
 	- [x] Fix depreciated citeproc filter (v.0.2.1)
@@ -40,33 +41,41 @@
 	- [ ] Implement as filter
 	- [ ] Documentation done
 - [ ] Release binaries
-	- [ ] Build binaries
-	- [ ] Document installation
-- [ ] Other
+	- [ ] Linux x86_64
+	- [ ] Apple x86_64
+	- [ ] Apple aarch64 (M1)
+	- [ ] Windows x86_64
+	- [ ] deb Package
+	- [ ] rpm Package
+- [x] Other
 	- [x] metadata.rs: Give Methods meaningful names (v.0.2.1)
 	- [-] File ending for temporary file (discarded)
 
-
-## Additional functionality
-
-- [ ] Reveal.js integration
+- [x] Reveal.js integration (v.0.3.0)
 - [ ] Get default documents
 - [ ] Libre Office/Word output
-	- [x] odt Export
-	- [x] odt Reference file
+	- [x] odt Export (v.0.3.0)
+	- [x] odt Reference file (v.0.3.0)
 	- [ ] odt Template file
-	- [x] docx Export
-	- [x] docx Reference file
-	- [x] error when wrong reference file type
+	- [x] docx Export (v.0.3.0)
+	- [x] docx Reference file (v.0.3.0)
+	- [x] error when wrong reference file type (v.0.3.0)
 	- [ ] error when docx gets template
-	- [x] pdf export via OpenOffice
-- [ ] Document output formats
-- [ ] PDF export using Libre Office
+	- [x] pdf export via OpenOffice (v.0.3.0)
+- [x] Document output formats (v.0.3.0)
 - [ ] NeoVim Plugin
 - [ ] metadata.rs
 	- [ ] Remove Header/Metadata duplicate
 - [ ] Load templates from URL's
 - [ ] Wordcount
 - [ ] Download the revealjs dependencies
+- [ ] Install via cargo
+- [ ] Pass data to tera context via path to YAML file
 
+Version 0.3 adds new output formats:
 
+- Export documents to odt
+- Export documents to docx
+- Set a reference file for odt and docx files
+- Export odt files and convert them to a pdf using LibreOffice
+- Export slide shows using reveal.js

@@ -11,6 +11,9 @@ homepage = "https://github.com/72nd/rsmooth"
 repository = "https://github.com/72nd/rsmooth"
 keywords = ["cli", "pandoc", "pdf", "markdown"]
 categories = ["command-line-utilities"]
+exclude = [
+	"misc/*",
+]
 
 [lib]
 name = "lib"

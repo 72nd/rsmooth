@@ -5,6 +5,15 @@ Opinionated wrapper around [pandoc](https://pandoc.org) to convert [Markdown fil
 To allow for even more flexibility it's possible to run the content of your input file trough [Terra](https://tera.netlify.app/) (a templating language very similar to [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/)). This allows you to tweak the content of your pandoc input. Currently rmsooth can convert markdown files into PDF's, OpenDocument Text (`.odt`), Office Open XML Document (`.docx`) and slide shows using [Reveal.js](https://revealjs.com/). Beside using pandocs default mechanism of creating PDF's, it's also possible to use [LibreOffice](https://www.libreoffice.org/).
 
 
+## Installation
+
+### Cargo
+
+### Binaries
+
+You can download the binary in the [release section](https://github.com/72nd/rsmooth/releases/latest). Currently only the binary for Linux x86_64 is available (others should be follow shortly).
+
+
 ## Usage
 
 This section will outline the most used work flows and options. Calling rsmooth with the `--help` flag will show all available functions.
@@ -48,7 +57,7 @@ As stated above rsmooth also supports the creation of odt, docx documents and re
 
 [Pandoc's template capabilities](https://pandoc.org/MANUAL.html#templates) gives you a lot of flexibility to control the output. But sometimes there is the need to have more control about the input side of things. This is why rsmooth allows you to alter the markdown input using the [Terra](https://tera.netlify.app/) template engine. You can enable Tera by setting the [do_tera](#apply-input-to-tera) and [tera_context](#tera-context) passing additional data (pleas read the documentation of the respective fields to learn more). You can learn more about the usage of Tera in [their documentation](https://tera.netlify.app/docs/#templates). Short example:
 
-`main.md` 
+main.md: 
 
 ```jinja
 ---
@@ -76,7 +85,7 @@ The content of the context variable `foo` is »{{ foo }}«. My shopping List:
 {% include "section.md" %}
 ``` 
 
-`section.md`
+section.md:
 
 ```markdown
 # A Section

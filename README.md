@@ -1,6 +1,6 @@
 # rsmooth
 
-Wrapper around [pandoc](https://pandoc.org) to create PDF's, office documents and slide show using.latex-project.org/). The main idea of rsmooth is to define all the needed informations in the [Front Matter](https://jekyllrb.com/docs/front-matter/) (a [YAML](https://en.wikipedia.org/wiki/YAML) header within the markdown document) thus no external configuration is needed.
+Opinionated wrapper around [pandoc](https://pandoc.org) to convert [Markdown files](https://en.wikipedia.org/wiki/Markdown) into PDF's, office documents (odt, docx) and slide shows. The main idea of rsmooth is to define all the needed informations in the [Front Matter](https://jekyllrb.com/docs/front-matter/) (a [YAML](https://en.wikipedia.org/wiki/YAML) header within the markdown document) thus no external configuration is needed.
 
 To allow for even more flexibility it's possible to run the content of your input file trough [Terra](https://tera.netlify.app/) (a templating language very similar to [Jinja2](https://jinja.palletsprojects.com/en/2.11.x/)). This allows you to tweak the content of your pandoc input. Currently rmsooth can convert markdown files into PDF's, OpenDocument Text (`.odt`), Office Open XML Document (`.docx`) and slide shows using [Reveal.js](https://revealjs.com/). Beside using pandocs default mechanism of creating PDF's, it's also possible to use [LibreOffice](https://www.libreoffice.org/).
 

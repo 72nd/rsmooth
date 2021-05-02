@@ -9,6 +9,12 @@ To allow for even more flexibility it's possible to run the content of your inpu
 
 ### Cargo
 
+If you have [cargo installed](https://doc.rust-lang.org/cargo/getting-started/installation.html) simply call:
+
+```shell script
+cargo install rsmooth
+``` 
+
 ### Binaries
 
 You can download the binary in the [release section](https://github.com/72nd/rsmooth/releases/latest). Currently only the binary for Linux x86_64 is available (others should be follow shortly).

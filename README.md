@@ -89,10 +89,8 @@ sed ornare ipsum, in condimentum velit.
 
 Calling `rsmooth main.md` will produce the following pdf:
 
-![](misc/tera.png)
-
 <p align="center">
-  <img width="100" src="misc/tera.png">
+  <img width="400" src="misc/tera.png">
 </p>
 
 ### Example file

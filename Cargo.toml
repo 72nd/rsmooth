@@ -1,6 +1,6 @@
 [package]
 name = "rsmooth"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["72nd <msg@frg72.com>"]
 edition = "2018"
 license = "MIT"

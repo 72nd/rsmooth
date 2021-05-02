@@ -69,13 +69,6 @@
 - [ ] Load templates from URL's
 - [ ] Wordcount
 - [ ] Download the revealjs dependencies
-- [ ] Install via cargo
+- [x] Install via cargo
 - [ ] Pass data to tera context via path to YAML file
 
-Version 0.3 adds new output formats:
-
-- Export documents to odt
-- Export documents to docx
-- Set a reference file for odt and docx files
-- Export odt files and convert them to a pdf using LibreOffice
-- Export slide shows using reveal.js

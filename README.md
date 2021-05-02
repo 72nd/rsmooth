@@ -81,13 +81,19 @@ The content of the context variable `foo` is »{{ foo }}«. My shopping List:
 ```markdown
 # A Section
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a commodo urna. Aliquam elementum molestie tempor. Suspendisse potenti. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam sed ornare ipsum, in condimentum velit. Sed iaculis risus at mauris mattis, rhoncus elementum dui venenatis. In ullamcorper auctor sapien non venenatis. Nunc cursus feugiat consequat. Curabitur iaculis eros a nulla efficitur facilisis. In volutpat condimentum ante a accumsan. Curabitur non nunc eu tellus dapibus pulvinar. Nullam convallis erat sit amet orci commodo, eu tempus sapien tempor. Mauris blandit enim nec nisl congue lobortis. Pellentesque nibh enim, molestie quis lorem id, accumsan dignissim eros. 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla a commodo urna.
+Aliquam elementum molestie tempor. Suspendisse potenti. Class aptent taciti
+sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam
+sed ornare ipsum, in condimentum velit.
 ```
 
 Calling `rsmooth main.md` will output the following pdf:
 
 ![](misc/tera.png)
 
+<p align="center">
+  <img width="140" src="misc/tera.png">
+</p>
 
 ### Example file
 

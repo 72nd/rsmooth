@@ -17,7 +17,7 @@ cargo install rsmooth
 
 ### Binaries
 
-You can download the binary in the [release section](https://github.com/72nd/rsmooth/releases/latest). Currently only the binary for Linux x86_64 is available (others should be follow shortly).
+You can download the binary in the [release section](https://github.com/72nd/rsmooth/releases/latest). Currently only the binary for Linux x86_64, and Mac x86_64 are available (others should follow in the future).
 
 
 ## Usage

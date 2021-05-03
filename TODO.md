@@ -10,11 +10,12 @@
 - [ ] Documentation
 	- [x] Finish `README.md` (v.0.2.0)
 	- [x] Document available environment variables (v.0.2.1)
-	- [ ] Example header with all options
+	- [-] Example header with all options
 	- [ ] Logo
-	- [ ] Document installation
+	- [x] Document installation
 	- [ ] Document Library
-	- [ ] Link to API
+	- [ ] Link to API Documentation
+	- [ ] Example document
 - [x] Bibliography
 	- [x] Fix relative imports in front matter header for bibliography(v.0.2.1)
 	- [x] Fix depreciated citeproc filter (v.0.2.1)
